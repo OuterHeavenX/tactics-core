@@ -23,8 +23,10 @@
   across the board on a parabola, charging casters glow.
 - **Deployment phase.** Place the party anywhere in the deploy zone before
   turn one.
-- **Sprite atlas hook.** Both renderers draw billboarded sprites if
-  `assets/sprites.png` is present; the vector pawns remain the fallback.
+- **Real sprites.** Every job is now drawn from 0x72's CC0 *DungeonTileset II*
+  — four cycling idle frames each, flipped to face the unit's facing — packed
+  into a 7 KB atlas by `tools/build-atlas.py`. The vector pawns remain the
+  fallback when the atlas is disabled.
 
 ### Engineering
 - **Whole-turn rewind** via a rules-level snapshot/restore (unit instances are

@@ -175,12 +175,12 @@ tools/                  validators, generators and test runners
 
 ### Sprites
 
-`assets/sprites.json` describes an optional pixel-art atlas. Drop a
-`sprites.png` beside it (a 4×4 grid of 128 px cells in job order), set
-`"enabled": true`, and the HTML5 build draws units as billboarded sprites;
-otherwise it draws the vector pawns. A sheet was generated with SpriteCook for this project (asset
-`2907f0e2-4de4-4e65-9825-3dcdba754438` on the connected account) but the
-sandbox could not download it, so it ships un-integrated.
+Units are drawn from `assets/sprites.png`, a small atlas packed by
+`tools/build-atlas.py` from **0x72's 16×16 DungeonTileset II** (CC0). Each job
+has four idle frames that cycle, and sprites flip to face the way the unit is
+looking. Set `"enabled": false` in `assets/sprites.json` to fall back to the
+vector pawns; both builds handle either. See `assets/CREDITS.md` for the
+job-to-sprite mapping.
 
 ### One source of truth
 

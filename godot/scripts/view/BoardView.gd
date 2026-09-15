@@ -29,6 +29,8 @@ var cursor = null                       # Vector2i or null
 var _shots: Array = []                  # projectiles in flight
 
 var _time := 0.0
+var _atlas_tex: Texture2D = null        # optional pixel-art atlas (see assets/CREDITS.md)
+var _atlas: Dictionary = {}
 var _tile_order: Array[Vector2i] = []
 var _order_rot := -1
 var _anims: Dictionary = {}             # unit id -> walk state
@@ -41,6 +43,23 @@ const JOB_LETTER := {
 	"Goblin": "g", "Orc": "O", "Bandit": "b", "Shade": "s", "Skeleton": "k",
 	"Necromancer": "N", "DarkKnight": "d", "Dragon": "D", "Merchant": "m",
 }
+
+func _ready() -> void:
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_load_atlas()
+
+## Sprites are optional: without the atlas every unit is a vector pawn.
+func _load_atlas() -> void:
+	if not FileAccess.file_exists("res://assets/sprites.json"):
+		return
+	var meta = JSON.parse_string(FileAccess.get_file_as_string("res://assets/sprites.json"))
+	if not (meta is Dictionary) or not bool(meta.get("enabled", false)):
+		return
+	var tex := load("res://assets/sprites.png")
+	if tex == null:
+		return
+	_atlas_tex = tex
+	_atlas = meta
 
 func setup(p_battle: Battle) -> void:
 	battle = p_battle
@@ -417,6 +436,28 @@ func _draw_decor(tile: Vector2i, p: Vector2, kind: String) -> void:
 				draw_line(p + Vector2(-Iso.TW * 0.5 + 6, i * 7), p + Vector2(Iso.TW * 0.5 - 6, i * 7),
 					Color(0, 0, 0, 0.28), 1.0)
 
+## Sprite billboard: feet on the tile, idle frames cycling, flipped to face
+## the way the unit is looking (the source art faces right).
+func _draw_sprite(u: Unit, p: Vector2, f: Dictionary) -> void:
+	var cell: Dictionary = _atlas["cells"][u.job]
+	var frames: Array = cell["frames"]
+	var fps := float(_atlas.get("fps", 6))
+	var fr: Dictionary = frames[int(floor(_time * fps + float(f["bob"]))) % frames.size()]
+	var sc := float(_atlas.get("scale", 2.0))
+	var sw := float(fr["w"]) * sc
+	var sh := float(fr["h"]) * sc
+	var flip := u.facing == 1 or u.facing == 3
+	var top := p.y - sh + 4.0
+	var src := Rect2(float(fr["x"]), float(fr["y"]), float(fr["w"]), float(fr["h"]))
+	var dst := Rect2(-sw * 0.5, top, sw, sh)
+	draw_set_transform(Vector2(p.x, 0.0), 0.0, Vector2(-1.0 if flip else 1.0, 1.0))
+	var tint := Color.WHITE
+	if float(f["flash"]) > 0.0:
+		tint = Color.WHITE.lerp(f["flash_color"], 0.5)
+	draw_texture_rect_region(_atlas_tex, dst, src, tint)
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+	_draw_bars(u, p, top - 9.0)
+
 func _draw_unit(u: Unit) -> void:
 	var gp := _unit_grid_pos(u)
 	var p := project(gp.x, gp.y, _unit_height(u))
@@ -457,6 +498,10 @@ func _draw_unit(u: Unit) -> void:
 		Color(team_color.r, team_color.g, team_color.b, 0.8))
 	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 
+	if _atlas_tex != null and (_atlas["cells"] as Dictionary).has(u.job):
+		_draw_sprite(u, p, f)
+		return
+
 	var bob := sin(float(f["bob"])) * 1.4
 	var body_h := 30.0
 	var body_w := 15.0
@@ -486,9 +531,11 @@ func _draw_unit(u: Unit) -> void:
 	draw_string(font, Vector2(p.x - lw * 0.5, cy - body_h * 0.14), letter,
 		HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color(0, 0, 0, 0.75))
 
-	# HP (and MP) bar above the head.
+	_draw_bars(u, p, cy - body_h * 0.78)
+
+## HP/MP bars and status pips, shared by the sprite and pawn paths.
+func _draw_bars(u: Unit, p: Vector2, by: float) -> void:
 	var bw := 30.0
-	var by := cy - body_h * 0.78
 	draw_rect(Rect2(p.x - bw * 0.5, by, bw, 4.5), Color(0.02, 0.03, 0.06, 0.85))
 	var frac := float(u.hp) / u.max_hp
 	var hp_col := Color("#6fd08c") if frac > 0.5 else (Color("#e8c66a") if frac > 0.25 else Color("#e05b5b"))

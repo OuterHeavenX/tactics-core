@@ -10,22 +10,28 @@ var TC = window.TC || (window.TC = {});   /* var, not const: these are classic s
 
 const KEY = TC.KEY;
 
-/* Optional pixel-art atlas. If assets/sprites.png exists next to assets/
-   sprites.json, units are drawn as billboarded sprites; otherwise the vector
-   pawn below is used. The default atlas layout is a 4x4 grid of 128px cells
-   in GameData job order, which is how tools/README describes the sheet.     */
+/* Pixel-art atlas built by tools/build-atlas.py from 0x72's CC0 tileset.
+   assets/sprites.json lists, per job, four idle frames and a display scale.
+   If the manifest is missing or disabled, units fall back to the vector pawn
+   below — the game never depends on the image being there.               */
 class SpriteAtlas {
   constructor() {
-    this.ready = false; this.img = null; this.cells = {};
+    this.ready = false; this.img = null; this.cells = {}; this.fps = 6;
     fetch("assets/sprites.json").then(r => r.ok ? r.json() : null).then(meta => {
-      if (!meta || !meta.enabled) return;     // opt-in, so a clean checkout makes no failing request
+      if (!meta || !meta.enabled) return;
       const img = new Image();
-      img.onload = () => { this.img = img; this.cells = meta.cells || {}; this.scale = meta.scale || 0.5; this.ready = true; };
+      img.onload = () => { this.img = img; this.cells = meta.cells || {}; this.scale = meta.scale || 2; this.fps = meta.fps || 6; this.ready = true; };
       img.onerror = () => { /* no sheet on disk: keep the vector pawns */ };
       img.src = meta.image || "assets/sprites.png";
     }).catch(() => {});
   }
-  cell(job) { return this.ready ? this.cells[job] : null; }
+  /* The frame to draw right now for a job, or null for the vector fallback. */
+  frame(job, time, phase) {
+    if (!this.ready) return null;
+    const c = this.cells[job];
+    if (!c || !c.frames || !c.frames.length) return null;
+    return c.frames[Math.floor(time * this.fps + phase) % c.frames.length];
+  }
 }
 TC.atlas = new SpriteAtlas();
 
@@ -499,18 +505,23 @@ class Renderer {
     ctx.closePath(); ctx.fill(); ctx.restore();
 
     const cy = p.y - bodyH * .55 + bob;
-    const cell = TC.atlas.cell(u.job);
+    const cell = TC.atlas.frame(u.job, this.time, f.bob);
     if (cell) {
-      // Sprite billboard, feet on the tile, tinted white while flashing.
+      // Sprite billboard: feet on the tile, idle frames cycling, flipped to
+      // face the way the unit is looking (the source art faces right).
       const sw = cell.w * TC.atlas.scale * z, sh = cell.h * TC.atlas.scale * z;
+      const flip = u.facing === TC.FACING.W || u.facing === TC.FACING.N;
+      const top = p.y - sh + 4 * z;
+      ctx.save();
       ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(TC.atlas.img, cell.x, cell.y, cell.w, cell.h, p.x - sw / 2, p.y + bob - sh + 3 * z, sw, sh);
+      ctx.translate(p.x, 0); if (flip) ctx.scale(-1, 1);
+      ctx.drawImage(TC.atlas.img, cell.x, cell.y, cell.w, cell.h, -sw / 2, top, sw, sh);
       if (f.flash > 0) {
-        ctx.save(); ctx.globalCompositeOperation = "source-atop"; ctx.globalAlpha = f.flash * .8;
-        ctx.fillStyle = f.flashColor; ctx.fillRect(p.x - sw / 2, p.y + bob - sh + 3 * z, sw, sh); ctx.restore();
+        ctx.globalCompositeOperation = "source-atop"; ctx.globalAlpha = f.flash * .8;
+        ctx.fillStyle = f.flashColor; ctx.fillRect(-sw / 2, top, sw, sh);
       }
-      ctx.imageSmoothingEnabled = true;
-      this.drawUnitBars(ctx, u, p, z, cy - bodyH * .72 - Math.max(0, sh - bodyH));
+      ctx.restore();
+      this.drawUnitBars(ctx, u, p, z, top - 9 * z);
       ctx.restore();
       return;
     }
