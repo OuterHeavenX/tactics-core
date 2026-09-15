@@ -1,23 +1,92 @@
-# Tactics Core — fixes (2026-09-15)
+# Changes
 
-Drop-in replacement for the original `index.html`. All changes verified with
-automated browser playtests (10/10 checks pass).
+## 2.0 — Isometric 2.5D rebuild, and a Godot 4 port
 
-## 1. Dead units no longer get turns
-`tickCT()` skipped KO'd units when accumulating charge time and when picking
-the next unit. Before, a KO'd unit would keep its CT, get "turns" with nothing
-on the board, and the turn-order panel hid it — looked like the game skipped you.
+Version 1 was a single `index.html`: a flat 12×10 checkerboard, four stats per
+unit, one attack, one heal, and an enemy AI that walked at you. This release
+keeps the charge-time skeleton and rebuilds everything around it.
 
-## 2. Priest gets Cure (8 MP)
-- On the Priest's turn, wounded allies in range 3 get a green outline; click one
-  to heal 10–16 HP (capped at max HP). Costs 8 MP, ends the turn like an attack.
-- Healed units flash green; the cast is logged; the how-to-play card explains it.
-- Self-targeting and full-HP allies are excluded on purpose — tapping your own
-  priest (or a healthy ally) stays a no-op instead of burning MP by accident.
+### The board is now 2.5D
 
-## 3. Phone-friendly layout
-- The board now scales to the screen width (CSS) instead of being fixed 816px,
-  and the side panel stacks full-width under 720px.
-- Click/tap coordinates are computed from the canvas's on-screen size, so taps
-  land on the right tile at any scale. `touch-action: manipulation` removes the
-  mobile double-tap zoom delay.
+- **Isometric projection.** Every tile is a 2:1 diamond top plus two shaded side
+  faces. Terrain height is real geometry: a cliff visibly stands above the tile
+  behind it, and correctly hides it.
+- **Height affects the rules, not just the picture.** Attacking downhill adds
+  accuracy and damage. Your Jump stat caps the step you can climb, so terraces
+  and cliffs block movement until you find the ramp.
+- **A rotating camera**, because cliffs hide tiles. `Q`/`E` swing through four
+  corners with the board tweening between them, and screen-to-tile picking is
+  exact at every angle — verified in the test suite.
+- **Pan, zoom, pinch,** and a camera that follows the acting unit when the board
+  is too big for the screen.
+
+### The combat has decisions in it
+
+- **Facing.** Units face a direction. Side hits do +25%, back hits +50% with a
+  large accuracy and crit bonus. Positioning now beats stats.
+- **Hit chance and crits** replace guaranteed damage, driven by facing, height,
+  terrain evasion and the defender's Evasion.
+- **CT economy.** What you do sets your leftover charge time: move and act → 0,
+  act → 20, move → 40, wait → 60. Restraint buys tempo.
+- **Move and act in either order**, and undo a move any time before you act.
+- **21 abilities** across 11 jobs, with MP costs, cooldowns, areas of effect,
+  line attacks, knockback, drain, summons and friendly fire.
+- **Nine status effects** — poison, regen, haste, slow, stun, protect, might,
+  weaken, shell — that tick on the afflicted unit's own turn.
+- **Passives** — counterattacks, high-ground bonuses, goblin pack tactics, orc
+  toughness, shades that float over height limits, bosses immune to stun.
+- **Items**: potions, ethers, antidotes and Phoenix Downs, in limited supply.
+- **Raise.** A fallen ally can come back. Losing someone is no longer final.
+- **Targeting preview**: expected damage, hit chance, which side you are hitting
+  from, and whether the blow is lethal — before you commit.
+
+### There is a campaign
+
+Four hand-built maps with distinct terrain problems — an open field, a bridge
+choke point over water, a four-terrace ziggurat around a lava pit, and a boss
+arena — plus XP, levelling, stat growth carried between chapters, and a saved
+campaign.
+
+### The AI plans instead of charging
+
+It scores every combination of where it could stand, what it could do and where
+it could aim, weighing expected damage against kill potential, healing, buffs,
+height, cover, hazards, exposure to your units, and back-attack angles. It
+navigates on a hazard-weighted travel-cost field, so it routes *around* a lava
+channel instead of treating it as a shortcut it will never take — which is what
+used to deadlock two melee squads on either side of the ziggurat.
+
+### It is built for a browser
+
+- Full-viewport canvas with a HUD that reflows for phones: the board keeps the
+  middle of the screen, panels move to the corners, the toolbar collapses into
+  the pause sheet, and the hint and preview share one strip above the buttons.
+- Touch: tap to act, drag to pan, pinch to zoom; first tap previews, second
+  commits.
+- Still **zero dependencies and zero build step**. Sound effects and music are
+  synthesised with WebAudio at runtime, so nothing is downloaded.
+
+### A Godot 4 build, kept honest
+
+`godot/` is the same game reconstructed in Godot 4.4 — the same data, the same
+formulas, the same AI — exported to the web single-threaded so it runs on static
+hosting without cross-origin-isolation headers.
+
+`js/data.js` is the single source of truth; `tools/gen-godot-data.js` compiles
+it into `GameData.gd` and CI fails if the checked-in copy is stale. A parity
+test replays deterministic scenarios recorded from the JavaScript engine
+through the GDScript one, diffing ~2,950 values exactly.
+
+### Tests
+
+- Rules invariants and isometric maths, in both engines.
+- An AI-vs-AI balance sweep over every chapter that fails on stalemates or
+  unwinnable maps (current curve ≈ 100% / 87% / 58% / 57%).
+- A Playwright playtest that starts a campaign, moves and undoes, attacks, and
+  plays a battle to a victory screen at desktop, tablet and phone sizes.
+- A Godot autoplay soak test that plays chapters end to end.
+
+### Fixes carried over from 1.x
+
+The version 1.1 fixes are still in: KO'd units never get turns, and the board
+scales and takes taps correctly at any size.
