@@ -29,7 +29,11 @@ class Unit {
     this.color = job.color;
     this.icon = job.icon;
     this.passive = job.passive;
-    this.abilities = job.abilities.slice();
+    this.npc = false;                       // set for protect-objective civilians
+    this.jp = 0;
+    this.learned = [];                      // ability ids bought with JP
+    // Enemies know their whole kit; the party starts with a subset and learns.
+    this.abilities = (team === "P" && job.starting) ? job.starting.slice() : job.abilities.slice();
     this.status = {};                       // id -> turns remaining
     this.cooldowns = {};                    // abilityId -> turns remaining
     this.applyGrowth();
@@ -99,9 +103,23 @@ class Unit {
       a && this.mp >= (a.mp || 0) && !(this.cooldowns[a.id] > 0));
   }
 
+  /* Abilities in the job list that are not yet known. */
+  learnable() {
+    return this.jobDef.abilities.filter(id => !this.abilities.includes(id) && TC.ABILITIES[id] && TC.ABILITIES[id].jp);
+  }
+  learn(id) {
+    const a = TC.ABILITIES[id];
+    if (!a || !a.jp || this.abilities.includes(id) || !this.jobDef.abilities.includes(id) || this.jp < a.jp) return false;
+    this.jp -= a.jp;
+    this.abilities.push(id);
+    this.learned.push(id);
+    return true;
+  }
+
   gainXp(n, battle) {
-    if (this.team !== "P" || n <= 0) return;
+    if (this.team !== "P" || n <= 0 || this.npc) return;
     this.xp += n;
+    this.jp += Math.ceil(n * 0.75);         // JP tracks XP, spent on the learn screen
     while (this.xp >= this.xpToNext) {
       this.xp -= this.xpToNext;
       this.level++;
@@ -117,27 +135,86 @@ TC.Unit = Unit;
 
 /* ========================================================================== */
 class Battle {
-  constructor(chapter, party) {
+  constructor(chapter, party, opts) {
+    opts = opts || {};
     this.chapter = chapter;
     this.grid = new TC.Grid(TC.MAPS[chapter.map]);
     this.units = [];
     this.events = [];
+    this.pending = [];                      // charging spells waiting to land
     this.turn = 0;
     this.over = null;                       // null | "victory" | "defeat"
     this.active = null;
     this.items = Object.assign({}, TC.START_ITEMS);
+    this.levelOffset = opts.levelOffset || 0;
+    this.snap = null;
 
     party.forEach((p, i) => {
       const slot = chapter.deploy[i] || chapter.deploy[chapter.deploy.length - 1];
-      this.add(new Unit(p.name, p.job, "P", slot[0], slot[1], p.level || 1));
+      const u = this.add(new Unit(p.name, p.job, "P", slot[0], slot[1], p.level || 1));
+      u.xp = p.xp || 0; u.jp = p.jp || 0;
+      for (const id of p.learned || []) if (!u.abilities.includes(id) && u.jobDef.abilities.includes(id)) {
+        u.abilities.push(id); u.learned.push(id);
+      }
     });
-    const lvl = chapter.enemyLevel != null
+    if (chapter.npc) {
+      const [name, job, x, y] = chapter.npc;
+      const n = this.add(new Unit(name, job, "P", x, y, Math.max(1, (chapter.enemyLevel || 1))));
+      n.npc = true;
+    }
+    const base = chapter.enemyLevel != null
       ? chapter.enemyLevel
       : 1 + TC.CAMPAIGN.findIndex(c => c.id === chapter.id) * 2;
     for (const [name, job, x, y] of chapter.enemies) {
-      this.add(new Unit(name, job, "E", x, y, Math.max(1, lvl)));
+      this.add(new Unit(name, job, "E", x, y, Math.max(1, base + this.levelOffset)));
     }
     for (const u of this.units) u.facing = this.faceNearestFoe(u);
+  }
+
+  /* ------------------------------------------------- deploy + rewind */
+  deployZone() { return TC.deployZone(this.grid, this.chapter); }
+
+  /* Swap or move a party member inside the deploy zone before turn one. */
+  placeUnit(u, x, y) {
+    if (this.turn > 0 || u.team !== "P" || u.npc) return false;
+    if (!this.deployZone().some(t => t.x === x && t.y === y)) return false;
+    const other = this.unitAt(x, y);
+    if (other && (other.team !== "P" || other.npc)) return false;
+    if (other) { other.x = u.x; other.y = u.y; }
+    u.x = x; u.y = y;
+    for (const v of this.units) v.facing = this.faceNearestFoe(v);
+    return true;
+  }
+
+  /* A copy of everything the rules can change, taken at the start of a player
+     turn so Story mode can rewind the whole turn. Unit objects stay the same
+     instances, so the view's references survive a restore. */
+  snapshot() {
+    return {
+      turn: this.turn, over: this.over, activeId: this.active ? this.active.id : -1,
+      items: Object.assign({}, this.items),
+      pending: this.pending.map(p => Object.assign({}, p)),
+      unitCount: this.units.length,
+      units: this.units.map(u => Object.assign({}, u, {
+        status: Object.assign({}, u.status), cooldowns: Object.assign({}, u.cooldowns),
+        abilities: u.abilities.slice(), learned: u.learned.slice(),
+      })),
+    };
+  }
+  restore(snap) {
+    if (!snap) return false;
+    this.units.length = snap.unitCount;     // drop anything summoned since
+    snap.units.forEach((data, i) => Object.assign(this.units[i], data, {
+      status: Object.assign({}, data.status), cooldowns: Object.assign({}, data.cooldowns),
+      abilities: data.abilities.slice(), learned: data.learned.slice(),
+    }));
+    this.items = Object.assign({}, snap.items);
+    this.pending = snap.pending.map(p => Object.assign({}, p));
+    this.turn = snap.turn; this.over = snap.over;
+    this.active = snap.activeId >= 0 ? this.units[snap.activeId] : null;
+    this.events = [];
+    this.emit({ type: "rewind" });
+    return true;
   }
 
   add(u) { u.id = this.units.length; this.units.push(u); return u; }
@@ -161,32 +238,53 @@ class Battle {
      is what used to make the board look like it was skipping your turn.     */
   tickCT() {
     for (let guard = 0; guard < 10000; guard++) {
+      const landing = this.pending.filter(p => p.ct >= 100).sort((a, b) => b.ct - a.ct);
+      if (landing.length) { for (const p of landing) this.resolvePending(p); continue; }
       const ready = this.living().filter(u => u.ct >= 100);
       if (ready.length) {
         ready.sort((a, b) => (b.ct - a.ct) || (b.stat("spd") - a.stat("spd")) || (a.id - b.id));
         return ready[0];
       }
       for (const u of this.living()) u.ct += u.stat("spd");
+      for (const p of this.pending) p.ct += p.speed;
     }
     return this.living()[0] || null;
+  }
+
+  /* A charged spell lands on whatever is there now — not what was there. */
+  resolvePending(p) {
+    this.pending = this.pending.filter(q => q !== p);
+    const caster = this.units[p.casterId];
+    if (!caster || !caster.alive) { this.emit({ type: "fizzle", spell: p, unit: caster }); return; }
+    const ability = TC.ABILITIES[p.abilityId];
+    const tiles = TC.footprint(this.grid, caster, ability, p.tx, p.ty);
+    const hits = this.affectedOn(caster, ability, tiles);
+    this.emit({ type: "land", unit: caster, ability, tx: p.tx, ty: p.ty, tiles });
+    const results = hits.map(t => this.resolveOn(caster, ability, t));
+    this.emit({ type: "resolve", unit: caster, ability, tiles, results });
   }
 
   /* Preview of the next few actors, for the timeline widget. */
   forecast(n) {
     const sim = this.living().map(u => ({ u, ct: u.ct, spd: u.stat("spd") }));
+    const spells = this.pending.map(p => ({ p, ct: p.ct }));
     const out = [];
     for (let guard = 0; guard < 4000 && out.length < n; guard++) {
+      const landing = spells.filter(s => s.ct >= 100);
+      if (landing.length) { for (const s of landing) { out.push({ spell: s.p }); spells.splice(spells.indexOf(s), 1); } continue; }
       const ready = sim.filter(s => s.ct >= 100).sort((a, b) => (b.ct - a.ct) || (b.spd - a.spd));
       if (ready.length) { out.push(ready[0].u); ready[0].ct = CT_AFTER.act; continue; }
       for (const s of sim) s.ct += s.spd;
+      for (const s of spells) s.ct += s.p.speed;
     }
-    return out;
+    return out.slice(0, n);
   }
 
   beginTurn() {
     if (this.checkEnd()) return null;
     const u = this.tickCT();
-    if (!u) return null;
+    // A charged spell landing during the tick can decide the battle.
+    if (!u || this.checkEnd()) return null;
     this.active = u;
     this.turn++;
     u.ct = 0;
@@ -315,7 +413,10 @@ class Battle {
 
   /* Which units an ability actually lands on, given an aim point. */
   affected(actor, ability, tx, ty) {
-    const tiles = ability.aoe ? TC.aoeTiles(this.grid, tx, ty, ability) : [{ x: tx, y: ty }];
+    const tiles = TC.footprint(this.grid, actor, ability, tx, ty);
+    return { tiles, hits: this.affectedOn(actor, ability, tiles) };
+  }
+  affectedOn(actor, ability, tiles) {
     const hits = [];
     for (const t of tiles) {
       const u = ability.target === "ko" || ability.type === "revive" ? this.koAt(t.x, t.y) : this.unitAt(t.x, t.y);
@@ -325,7 +426,7 @@ class Battle {
       if (ability.target === "ally" && u.team !== actor.team) continue;
       hits.push(u);
     }
-    return { tiles, hits };
+    return hits;
   }
 
   /* Is `tile` a legal aim point for this ability from where the actor stands? */
@@ -361,6 +462,15 @@ class Battle {
       u.ct = 40;
       this.emit({ type: "summon", unit: u, by: actor });
       return { results: [{ unit: u, summoned: true }] };
+    }
+
+    if (ability.charge) {
+      const spell = { id: this.nextSpellId = (this.nextSpellId || 0) + 1, casterId: actor.id, abilityId: ability.id,
+                      tx, ty, ct: 0, speed: ability.charge };
+      this.pending.push(spell);
+      this.emit({ type: "charge", unit: actor, ability, tx, ty, spell,
+                  tiles: TC.footprint(this.grid, actor, ability, tx, ty) });
+      return { results: [], charging: true };
     }
 
     const { tiles, hits } = this.affected(actor, ability, tx, ty);
@@ -477,9 +587,12 @@ class Battle {
   /* ------------------------------------------------------------ result */
   checkEnd() {
     if (this.over) return true;
-    const players = this.living("P").length;
+    const players = this.living("P").filter(u => !u.npc).length;
     const enemies = this.living("E");
     if (!players) { this.over = "defeat"; this.emit({ type: "end", result: "defeat" }); return true; }
+    if (this.chapter.objective === "protect" && this.units.some(u => u.npc && !u.alive)) {
+      this.over = "defeat"; this.emit({ type: "end", result: "defeat", reason: "npc" }); return true;
+    }
     if (this.chapter.objective === "boss") {
       if (!enemies.some(e => e.passive === "boss")) { this.over = "victory"; this.emit({ type: "end", result: "victory" }); return true; }
       return false;

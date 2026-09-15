@@ -56,6 +56,8 @@ ${arr("PARTY", TC.PARTY)}
 
 ${dict("START_ITEMS", TC.START_ITEMS)}
 
+${dict("DIFFICULTY", TC.DIFFICULTY)}
+
 # --------------------------------------------------------------- helpers --
 static func terrain(code: String) -> Dictionary:
 \treturn TERRAIN.get(code, TERRAIN["g"])

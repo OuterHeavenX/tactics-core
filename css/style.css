@@ -140,6 +140,12 @@ canvas#cv{position:absolute; inset:0; width:100%; height:100%; display:block; to
 .roster .r .n{font-size:12px; font-weight:600;}
 .roster .r .j{font-size:10px; color:var(--gold); text-transform:uppercase; letter-spacing:1px;}
 .roster .r .l{font-size:10.5px; color:var(--dim);}
+.roster.learn{grid-template-columns:1fr;}
+.learn-card .cost{font-size:10.5px; color:var(--blue); font-weight:400;}
+.learn-row{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:6px 0; border-top:1px solid var(--line); font-size:12px;}
+.learn-row .abtn{padding:6px 12px; min-height:32px; font-size:12px;}
+.ldesc{font-size:11px; color:var(--dim); margin-top:2px;}
+#timeline .slot.spell .pip{color:#ff9d5c;}
 .helpgrid{text-align:left; display:grid; gap:7px; font-size:12.5px; color:var(--dim); margin:10px 0;}
 .helpgrid b{color:var(--text);}
 kbd{background:#2a2f4d; border:1px solid var(--line); border-radius:4px; padding:0 5px; font-size:10.5px; color:var(--text);}

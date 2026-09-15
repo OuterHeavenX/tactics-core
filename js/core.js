@@ -207,6 +207,45 @@ TC.tilesInRange = function (grid, ox, oy, ability) {
   return out;
 };
 
+/* A cone `len` tiles deep, opening from the caster toward `aim`. Row k of the
+   cone (k tiles out) is 2*floor(k/2)+1 wide, so breath reaches three tiles
+   straight ahead and fans out to the sides. */
+TC.coneTiles = function (grid, cx, cy, ax, ay, len) {
+  const dir = TC.DIRS[TC.facingFromDelta(ax - cx, ay - cy)];
+  const side = dir[0] === 0 ? [1, 0] : [0, 1];
+  const out = [];
+  for (let k = 1; k <= len; k++) {
+    const half = Math.floor(k / 2);
+    for (let w = -half; w <= half; w++) {
+      const x = cx + dir[0] * k + side[0] * w, y = cy + dir[1] * k + side[1] * w;
+      if (grid.inBounds(x, y) && !grid.at(x, y).terrain.void) out.push({ x, y });
+    }
+  }
+  return out;
+};
+
+/* Every tile an ability lands on, given who is casting and where it is aimed. */
+TC.footprint = function (grid, actor, ability, tx, ty) {
+  if (ability.shape === "cone") return TC.coneTiles(grid, actor.x, actor.y, tx, ty, ability.coneLen || 3);
+  return ability.aoe ? TC.aoeTiles(grid, tx, ty, ability) : [{ x: tx, y: ty }];
+};
+
+/* Where the player may stand at the start of a chapter: every walkable tile
+   within two steps of a default deploy slot that no enemy spawns on. */
+TC.deployZone = function (grid, chapter) {
+  const taken = new Set(chapter.enemies.map(e => TC.KEY(e[2], e[3])));
+  if (chapter.npc) taken.add(TC.KEY(chapter.npc[2], chapter.npc[3]));
+  const zone = [], seen = new Set();
+  for (const [dx0, dy0] of chapter.deploy) {
+    for (let dy = -2; dy <= 2; dy++) for (let dx = -2 + Math.abs(dy); dx <= 2 - Math.abs(dy); dx++) {
+      const x = dx0 + dx, y = dy0 + dy, k = TC.KEY(x, y);
+      if (seen.has(k) || taken.has(k) || !grid.walkable(x, y)) continue;
+      seen.add(k); zone.push({ x, y });
+    }
+  }
+  return zone;
+};
+
 /* The splash footprint of an ability centred on a tile. */
 TC.aoeTiles = function (grid, cx, cy, ability) {
   const r = ability.aoe | 0;
@@ -220,6 +259,7 @@ TC.aoeTiles = function (grid, cx, cy, ability) {
 };
 
 /* --------------------------------------------------------------- utility */
+TC.KEY = (x, y) => x + "," + y;          // tile key shared by rules, AI and renderer
 TC.clamp = (v, lo, hi) => v < lo ? lo : v > hi ? hi : v;
 TC.lerp = (a, b, t) => a + (b - a) * t;
 TC.easeOut = t => 1 - Math.pow(1 - t, 3);

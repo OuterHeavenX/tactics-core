@@ -95,7 +95,7 @@ Passed after a bare `--`:
 
 | Flag | Effect |
 | --- | --- |
-| `--autoplay` | the AI plays the player side too, through the real UI entry points |
+| `--autoplay` | the AI plays the player side too, through the real UI entry points (skips deployment) |
 | `--chapter=N` | start on chapter 1–4 |
 | `--shots=DIR` | save a PNG every `--shot-every` frames |
 | `--shot-every=N` | frames between screenshots (default 120) |

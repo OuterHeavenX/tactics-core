@@ -24,28 +24,111 @@ var turn: int = 0
 var over: String = ""                  # "" | "victory" | "defeat"
 var active: Unit = null
 var items: Dictionary = {}
+var pending: Array[Dictionary] = []    # charging spells waiting to land
+var level_offset: int = 0
+var _next_spell_id: int = 0
 
-func _init(p_chapter: Dictionary, party: Array) -> void:
+func _init(p_chapter: Dictionary, party: Array, opts: Dictionary = {}) -> void:
 	chapter = p_chapter
 	grid = BattleGrid.new(GameData.MAPS[p_chapter["map"]])
 	items = GameData.START_ITEMS.duplicate()
+	level_offset = int(opts.get("levelOffset", 0))
 
 	var deploy: Array = p_chapter["deploy"]
 	for i in party.size():
 		var p: Dictionary = party[i]
 		var slot: Array = deploy[mini(i, deploy.size() - 1)]
-		add_unit(Unit.new(p["name"], p["job"], "P", Vector2i(slot[0], slot[1]), int(p.get("level", 1))))
+		var u := add_unit(Unit.new(p["name"], p["job"], "P", Vector2i(slot[0], slot[1]), int(p.get("level", 1))))
+		u.xp = int(p.get("xp", 0))
+		u.jp = int(p.get("jp", 0))
+		for id in p.get("learned", []):
+			if not u.abilities.has(id) and (u.job_def["abilities"] as Array).has(id):
+				u.abilities.append(id)
+				u.learned.append(id)
+	if p_chapter.has("npc"):
+		var n: Array = p_chapter["npc"]
+		var civ := add_unit(Unit.new(n[0], n[1], "P", Vector2i(int(n[2]), int(n[3])), maxi(1, int(p_chapter.get("enemyLevel", 1)))))
+		civ.npc = true
 
 	var chapter_index := 0
 	for i in GameData.CAMPAIGN.size():
 		if GameData.CAMPAIGN[i]["id"] == p_chapter["id"]:
 			chapter_index = i
-	var enemy_level: int = int(p_chapter["enemyLevel"]) if p_chapter.has("enemyLevel") else maxi(1, 1 + chapter_index * 2)
+	var base_level: int = int(p_chapter["enemyLevel"]) if p_chapter.has("enemyLevel") else maxi(1, 1 + chapter_index * 2)
 	for e in p_chapter["enemies"]:
-		add_unit(Unit.new(e[0], e[1], "E", Vector2i(e[2], e[3]), enemy_level))
+		add_unit(Unit.new(e[0], e[1], "E", Vector2i(e[2], e[3]), maxi(1, base_level + level_offset)))
 
 	for u in units:
 		u.facing = face_nearest_foe(u)
+
+# ------------------------------------------------------- deploy + rewind --
+func deploy_zone() -> Array[Vector2i]:
+	return grid.deploy_zone(chapter)
+
+## Swap or move a party member inside the deploy zone before turn one.
+func place_unit(u: Unit, target: Vector2i) -> bool:
+	if turn > 0 or u.team != "P" or u.npc:
+		return false
+	if not deploy_zone().has(target):
+		return false
+	var other := unit_at(target.x, target.y)
+	if other != null and (other.team != "P" or other.npc):
+		return false
+	if other != null:
+		other.pos = u.pos
+	u.pos = target
+	for v in units:
+		v.facing = face_nearest_foe(v)
+	return true
+
+## Everything the rules can change, copied at the start of a player turn so
+## Story mode can rewind the whole turn. Unit instances are kept, so the
+## view's references survive a restore.
+func snapshot() -> Dictionary:
+	var us: Array = []
+	for u in units:
+		us.append({
+			"pos": u.pos, "facing": u.facing, "hp": u.hp, "mp": u.mp, "ct": u.ct,
+			"moved": u.moved, "acted": u.acted, "counter_ready": u.counter_ready,
+			"xp": u.xp, "jp": u.jp, "level": u.level,
+			"max_hp": u.max_hp, "max_mp": u.max_mp,
+			"base_atk": u.base_atk, "base_def": u.base_def, "base_mag": u.base_mag,
+			"base_res": u.base_res, "base_spd": u.base_spd,
+			"status": u.status.duplicate(), "cooldowns": u.cooldowns.duplicate(),
+			"abilities": u.abilities.duplicate(), "learned": u.learned.duplicate(),
+			"start_pos": u.start_pos, "start_facing": u.start_facing,
+		})
+	var ps: Array = []
+	for p in pending:
+		ps.append(p.duplicate())
+	return {"turn": turn, "over": over, "active_id": active.id if active != null else -1,
+		"items": items.duplicate(), "pending": ps, "unit_count": units.size(), "units": us}
+
+func restore(snap: Dictionary) -> bool:
+	if snap.is_empty():
+		return false
+	units.resize(int(snap["unit_count"]))          # drop anything summoned since
+	var us: Array = snap["units"]
+	for i in us.size():
+		var u: Unit = units[i]
+		var d: Dictionary = us[i]
+		for k in d:
+			match k:
+				"status": u.status = (d[k] as Dictionary).duplicate()
+				"cooldowns": u.cooldowns = (d[k] as Dictionary).duplicate()
+				"abilities": u.abilities = (d[k] as Array).duplicate()
+				"learned": u.learned = (d[k] as Array).duplicate()
+				_: u.set(k, d[k])
+	items = (snap["items"] as Dictionary).duplicate()
+	pending.clear()
+	for p in snap["pending"]:
+		pending.append((p as Dictionary).duplicate())
+	turn = int(snap["turn"])
+	over = String(snap["over"])
+	active = units[int(snap["active_id"])] if int(snap["active_id"]) >= 0 else null
+	events.clear()
+	emit({"type": "rewind"})
+	return true
 
 func add_unit(u: Unit) -> Unit:
 	u.id = units.size()
@@ -93,6 +176,15 @@ func face_nearest_foe(u: Unit) -> int:
 ## Advance charge time until somebody is ready. KO'd units never tick.
 func tick_ct() -> Unit:
 	for guard in 10000:
+		var landing: Array[Dictionary] = []
+		for p in pending:
+			if float(p["ct"]) >= 100.0:
+				landing.append(p)
+		if not landing.is_empty():
+			landing.sort_custom(func(a, b): return float(a["ct"]) > float(b["ct"]))
+			for p in landing:
+				resolve_pending(p)
+			continue
 		var ready: Array[Unit] = []
 		for u in living():
 			if u.ct >= 100.0:
@@ -107,21 +199,55 @@ func tick_ct() -> Unit:
 			return ready[0]
 		for u in living():
 			u.ct += u.stat("spd")
+		for p in pending:
+			p["ct"] = float(p["ct"]) + float(p["speed"])
 	var l := living()
 	return l[0] if not l.is_empty() else null
 
-## Preview of the next few actors, for the turn-order strip.
-func forecast(n: int) -> Array[Unit]:
+## A charged spell lands on whatever is there now - not what was there.
+func resolve_pending(p: Dictionary) -> void:
+	pending.erase(p)
+	var caster: Unit = units[int(p["casterId"])] if int(p["casterId"]) < units.size() else null
+	if caster == null or not caster.alive():
+		emit({"type": "fizzle", "spell": p, "unit": caster})
+		return
+	var ability := GameData.ability(String(p["abilityId"]))
+	var target := Vector2i(int(p["tx"]), int(p["ty"]))
+	var tiles := grid.footprint(caster, ability, target)
+	var hits := affected_on(caster, ability, tiles)
+	emit({"type": "land", "unit": caster, "ability": ability, "target": target, "tiles": tiles})
+	for t in hits:
+		_resolve_on(caster, ability, t)
+	emit({"type": "resolve", "unit": caster, "ability": ability, "tiles": tiles})
+
+## Preview of the next few actors, for the turn-order strip. Entries are
+## Units, or {"spell": pending} for a charged spell about to land.
+func forecast(n: int) -> Array:
 	var sim: Array = []
 	for u in living():
 		sim.append({"u": u, "ct": u.ct, "spd": float(u.stat("spd"))})
-	var out: Array[Unit] = []
+	var spells: Array = []
+	for p in pending:
+		spells.append({"p": p, "ct": float(p["ct"])})
+	var out: Array = []
 	for guard in 4000:
 		if out.size() >= n:
 			break
+		var landing: Array = []
+		for s in spells:
+			if float(s["ct"]) >= 100.0:
+				landing.append(s)
+		if not landing.is_empty():
+			for s in landing:
+				out.append({"spell": s["p"]})
+				spells.erase(s)
+			continue
+		# Same tie-break as tick_ct: higher CT, then higher Speed, then id order.
 		var best = null
 		for s in sim:
-			if s["ct"] >= 100.0 and (best == null or s["ct"] > best["ct"]):
+			if s["ct"] < 100.0:
+				continue
+			if best == null or s["ct"] > best["ct"] or (s["ct"] == best["ct"] and s["spd"] > best["spd"]):
 				best = s
 		if best != null:
 			out.append(best["u"])
@@ -129,13 +255,18 @@ func forecast(n: int) -> Array[Unit]:
 			continue
 		for s in sim:
 			s["ct"] += s["spd"]
+		for s in spells:
+			s["ct"] = float(s["ct"]) + float(s["p"]["speed"])
+	if out.size() > n:
+		out.resize(n)
 	return out
 
 func begin_turn() -> Unit:
 	if check_end():
 		return null
 	var u := tick_ct()
-	if u == null:
+	# A charged spell landing during the tick can decide the battle.
+	if u == null or check_end():
 		return null
 	active = u
 	turn += 1
@@ -307,7 +438,9 @@ func _award_xp(u: Unit, n: int) -> void:
 
 ## Which units an ability actually lands on, given an aim point.
 func affected(actor: Unit, ability: Dictionary, target: Vector2i) -> Array[Unit]:
-	var tiles: Array[Vector2i] = grid.aoe_tiles(target.x, target.y, ability) if int(ability.get("aoe", 0)) > 0 else ([target] as Array[Vector2i])
+	return affected_on(actor, ability, grid.footprint(actor, ability, target))
+
+func affected_on(actor: Unit, ability: Dictionary, tiles: Array[Vector2i]) -> Array[Unit]:
 	var want := String(ability.get("target", "enemy"))
 	var out: Array[Unit] = []
 	for t in tiles:
@@ -368,8 +501,17 @@ func use_ability(actor: Unit, ability: Dictionary, target: Vector2i) -> bool:
 		emit({"type": "summon", "unit": minion, "by": actor})
 		return true
 
-	var tiles: Array[Vector2i] = grid.aoe_tiles(target.x, target.y, ability) if int(ability.get("aoe", 0)) > 0 else ([target] as Array[Vector2i])
-	for t in affected(actor, ability, target):
+	if ability.has("charge"):
+		_next_spell_id += 1
+		var spell := {"id": _next_spell_id, "casterId": actor.id, "abilityId": String(ability["id"]),
+			"tx": target.x, "ty": target.y, "ct": 0.0, "speed": float(ability["charge"])}
+		pending.append(spell)
+		emit({"type": "charge", "unit": actor, "ability": ability, "target": target, "spell": spell,
+			"tiles": grid.footprint(actor, ability, target)})
+		return true
+
+	var tiles := grid.footprint(actor, ability, target)
+	for t in affected_on(actor, ability, tiles):
 		_resolve_on(actor, ability, t)
 	emit({"type": "resolve", "unit": actor, "ability": ability, "tiles": tiles})
 	return true
@@ -474,10 +616,20 @@ func use_item(actor: Unit, item_id: String, target_pos: Vector2i) -> bool:
 func check_end() -> bool:
 	if over != "":
 		return true
-	if living("P").is_empty():
+	var fighters := 0
+	for u in living("P"):
+		if not u.npc:
+			fighters += 1
+	if fighters == 0:
 		over = "defeat"
 		emit({"type": "end", "result": "defeat"})
 		return true
+	if String(chapter.get("objective", "rout")) == "protect":
+		for u in units:
+			if u.npc and not u.alive():
+				over = "defeat"
+				emit({"type": "end", "result": "defeat", "reason": "npc"})
+				return true
 	var enemies := living("E")
 	if String(chapter.get("objective", "rout")) == "boss":
 		for e in enemies:

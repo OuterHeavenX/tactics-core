@@ -25,7 +25,23 @@ const W = {
   approach:   -1.6,    // per tile of distance to the nearest target
   backstab:    8,
   selfPreserve: 30,
+  npcKill:     2.2,
+  guard:       3.0,    // per tile an escort strays from the civilian it protects    // multiplier on value against a protect-objective civilian
+  charged:     0.8,    // a spell that lands later may miss a target that walks away
 };
+
+/* Damage a unit would eat from every enemy spell already charging over a tile. */
+function incoming(battle, unit, tile) {
+  let dmg = 0;
+  for (const p of battle.pending) {
+    const caster = battle.units[p.casterId];
+    if (!caster || !caster.alive || caster.team === unit.team) continue;
+    const ability = TC.ABILITIES[p.abilityId];
+    const inside = TC.footprint(battle.grid, caster, ability, p.tx, p.ty).some(t => t.x === tile.x && t.y === tile.y);
+    if (inside) dmg += battle.estimateDamage(caster, unit, ability);
+  }
+  return dmg;
+}
 
 /* How many living player units could reach and strike this tile next turn. */
 function exposure(battle, tile, self) {
@@ -56,9 +72,17 @@ function tileScore(battle, unit, tile, nearestFoe, field) {
   s += g.height(tile.x, tile.y) * W.height;
   s += (g.eva(tile.x, tile.y) + g.def(tile.x, tile.y) * 4) * W.cover;
   if (g.hazard(tile.x, tile.y)) s += W.hazard;
-  s += exposure(battle, tile, unit) * (W.exposure / aggro);
+  s -= incoming(battle, unit, tile) * 1.1;          // step out of charging spells
   const reach = approachCost(battle, field, tile, nearestFoe);
+  if (unit.npc) {
+    // Civilians only want to be far away and out of reach.
+    return s - exposure(battle, tile, unit) * 6 + Math.min(reach, 12) * 1.5;
+  }
+  s += exposure(battle, tile, unit) * (W.exposure / aggro);
   s += reach * W.approach * aggro;
+  // Escorts stay close enough to body-block for the civilian.
+  const ward = battle.units.find(v => v.npc && v.alive && v.team === unit.team);
+  if (ward) s -= Math.max(0, TC.manhattan(tile, ward) - 1) * W.guard;
   // Hurt units want to be further away; healthy ones want to be in your face.
   const hpFrac = unit.hp / unit.maxHp;
   if (hpFrac < 0.3) s -= reach * W.approach * 1.8 / aggro;
@@ -104,6 +128,8 @@ function actionScore(battle, unit, from, ability, tx, ty) {
         if (dmg >= target.hp) v += W.kill * acc;
         if (ability.status && !target.has(ability.status.id)) v += W.status * (ability.status.chance / 100);
         if (TC.relativeSide(target, unit) === "back") v += W.backstab;
+        if (target.npc && !friendly) v *= W.npcKill;   // the objective is standing right there
+        if (ability.charge) v *= W.charged;
         s += friendly ? v * W.allyHit : v;
       }
     }

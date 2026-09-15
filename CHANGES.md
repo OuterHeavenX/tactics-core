@@ -1,5 +1,38 @@
 # Changes
 
+## 2.1 — Depth, feel, and engineering
+
+### Depth
+- **Cast-time spells.** Fire, Frost, Meteor, Judgment and Dark Pulse charge on
+  the timeline and land on whatever is there when they resolve. The tiles under
+  a charging spell glow, the caster wears a ring, and the AI steps out of the
+  way (and discounts a charged spell it is thinking of casting at you).
+- **Ability learning.** Actions earn JP alongside XP. Between chapters, spend
+  it on eleven learnable abilities across the five party jobs. Jobs now start
+  with a subset of their kit.
+- **Three new chapters** between the ziggurat and the finale: a night ambush
+  with a **protect** objective (a civilian who cannot fight and must survive),
+  castle ramparts with enemy Dark Knights, and a **Dragon boss** whose breath is
+  a cone three tiles deep. The AI escorts the civilian when it has one and
+  hunts it when it does not.
+- **Difficulty settings.** Story, Normal, Hard — an enemy level offset, and
+  Story mode can rewind an entire turn.
+
+### Feel
+- **Attack animations.** Melee lunges toward the target, shots and spells arc
+  across the board on a parabola, charging casters glow.
+- **Deployment phase.** Place the party anywhere in the deploy zone before
+  turn one.
+- **Sprite atlas hook.** Both renderers draw billboarded sprites if
+  `assets/sprites.png` is present; the vector pawns remain the fallback.
+
+### Engineering
+- **Whole-turn rewind** via a rules-level snapshot/restore (unit instances are
+  kept, so the view never loses its references).
+- Balance sweep, parity fixture and both Godot suites extended to cover all
+  seven chapters and every new system; the parity test now diffs ~4,250 values.
+- The single-source-of-truth generator now emits the difficulty table too.
+
 ## 2.0 — Isometric 2.5D rebuild, and a Godot 4 port
 
 Version 1 was a single `index.html`: a flat 12×10 checkerboard, four stats per

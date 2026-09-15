@@ -81,6 +81,8 @@ func check_chapter(chapter_id: String, rec: Dictionary) -> void:
 		eq(tag + " spd", u.stat("spd"), int(row["spd"]))
 		eq(tag + " move", u.stat("move"), int(row["move"]))
 		eq(tag + " jump", u.stat("jump"), int(row["jump"]))
+		eq(tag + " npc", u.npc, bool(row["npc"]))
+		eq(tag + " abilities", ",".join(PackedStringArray(u.abilities)), ",".join(PackedStringArray(row["abilities"])))
 
 	# --- combat maths ----------------------------------------------------
 	for row in rec["combat"]:
@@ -144,10 +146,28 @@ func check_chapter(chapter_id: String, rec: Dictionary) -> void:
 			eq(tag + " target", "%d,%d" % [plan["target"].x, plan["target"].y], String(row["target"]))
 		eq(tag + " score", snappedf(float(plan["score"]), 0.001), snappedf(float(row["score"]), 0.001))
 
+	# --- geometry: deploy zone and breath cones -----------------------------
+	var zone := b.deploy_zone()
+	var zsum := 0
+	for t in zone:
+		zsum += t.x * 31 + t.y * 17
+	eq("%s deploy zone count" % chapter_id, zone.size(), int(rec["zone"]["count"]))
+	eq("%s deploy zone checksum" % chapter_id, zsum, int(rec["zone"]["sum"]))
+	for row in rec["cones"]:
+		for u in b.units:
+			if u.job != "Dragon":
+				continue
+			var cone := b.grid.cone_tiles(u.pos.x, u.pos.y, u.pos.x + int(row["dx"]), u.pos.y + int(row["dy"]), 3)
+			var csum := 0
+			for t in cone:
+				csum += t.x * 31 + t.y * 17
+			eq("%s cone %d,%d count" % [chapter_id, int(row["dx"]), int(row["dy"])], cone.size(), int(row["count"]))
+			eq("%s cone %d,%d checksum" % [chapter_id, int(row["dx"]), int(row["dy"])], csum, int(row["sum"]))
+
 	# --- turn order ------------------------------------------------------
 	var got_forecast: Array = []
-	for u in b.forecast(8):
-		got_forecast.append(u.unit_name)
+	for e in b.forecast(8):
+		got_forecast.append("spell" if e is Dictionary else (e as Unit).unit_name)
 	eq("%s forecast" % chapter_id, ", ".join(PackedStringArray(got_forecast)),
 		", ".join(PackedStringArray(rec["forecast"])))
 

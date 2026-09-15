@@ -39,9 +39,11 @@ class Game {
     if (!this.progress) return;
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(this.progress)); } catch (e) {}
   }
-  newProgress() {
-    return { chapter: 0, party: TC.PARTY.map(p => ({ name: p.name, job: p.job, level: 1, xp: 0 })), wins: 0 };
+  newProgress(difficulty) {
+    return { chapter: 0, difficulty: difficulty || "normal", wins: 0,
+             party: TC.PARTY.map(p => ({ name: p.name, job: p.job, level: 1, xp: 0, jp: 0, learned: [] })) };
   }
+  get difficulty() { return TC.DIFFICULTY[(this.progress && this.progress.difficulty) || "normal"]; }
 
   /* ------------------------------------------------------------ screens */
   modal(html, on) {
@@ -62,15 +64,20 @@ class Game {
         return `<div class="r"><div class="n">${j.icon} ${p.name}</div><div class="j">${p.job}</div><div class="l">${j.blurb}</div></div>`;
       }).join("")}</div>
       <div class="row">
-        ${has ? `<button class="abtn primary" data-act="continue">Continue — Chapter ${this.progress.chapter + 1}</button>` : ""}
-        <button class="abtn ${has ? "" : "primary"}" data-act="new">New Campaign</button>
+        ${has ? `<button class="abtn primary" data-act="continue">Continue — Chapter ${this.progress.chapter + 1} (${this.difficulty.name})</button>` : ""}
         <button class="abtn" data-act="help">How to Play</button>
-      </div>`);
+      </div>
+      <div class="h2" style="margin-top:14px">New campaign</div>
+      <div class="row" style="margin-top:6px">
+        ${Object.entries(TC.DIFFICULTY).map(([id, d]) =>
+          `<button class="abtn ${id === "normal" && !has ? "primary" : ""}" data-act="new" data-diff="${id}" title="${d.blurb}">${d.name}</button>`).join("")}
+      </div>
+      <p style="margin-top:8px;font-size:11.5px">${Object.values(TC.DIFFICULTY).map(d => `<b>${d.name}</b> — ${d.blurb}`).join(" &nbsp;·&nbsp; ")}</p>`);
     $("sheet").onclick = e => {
       const a = e.target.closest("[data-act]"); if (!a) return;
       TC.audio.unlock(); TC.audio.play("select");
       if (a.dataset.act === "help") return this.help(() => this.title());
-      if (a.dataset.act === "new") { this.progress = this.newProgress(); this.save(); }
+      if (a.dataset.act === "new") { this.progress = this.newProgress(a.dataset.diff); this.save(); }
       this.briefing();
     };
   }
@@ -143,12 +150,14 @@ class Game {
       <div class="tip">💡 ${ch.tip}</div>
       <div class="row">
         <button class="abtn primary" data-act="go">Begin Battle</button>
+        <button class="abtn" data-act="learn">Learn Abilities</button>
         <button class="abtn" data-act="help">How to Play</button>
         <button class="abtn" data-act="title">Main Menu</button>
       </div>`);
     $("sheet").onclick = e => {
       const a = e.target.closest("[data-act]"); if (!a) return;
       TC.audio.unlock(); TC.audio.play("select");
+      if (a.dataset.act === "learn") return this.learnScreen();
       if (a.dataset.act === "help") return this.help(() => this.briefing());
       if (a.dataset.act === "title") return this.title();
       this.closeModal();
@@ -168,14 +177,45 @@ class Game {
     this.clearOverlays();
     this.hint("");
     $("inspect").style.display = "none";
-    this.battle = new TC.Battle(ch, this.progress.party);
+    this.battle = new TC.Battle(ch, this.progress.party, { levelOffset: this.difficulty.levelOffset });
     this.r.attach(this.battle);
     this.logLines = [];
     $("logbox").innerHTML = "";
-    $("chapter").innerHTML = `<div class="title">${ch.title.replace(/^Chapter \d+ — /, "")}</div>
-      <div class="obj">${ch.objective === "boss" ? "Defeat the Necromancer" : "Defeat all enemies"}</div>`;
-    this.log(`<b>${ch.title}</b> — ${ch.objective === "boss" ? "slay the boss" : "rout the enemy"}.`, "s");
+    const objective = ch.objective === "boss" ? "Slay the boss" : ch.objective === "protect" ? `Keep ${ch.npc[0]} alive` : "Defeat all enemies";
+    $("chapter").innerHTML = `<div class="title">${ch.title.replace(/^Chapter \d+ — /, "")}</div><div class="obj">${objective}</div>`;
+    this.log(`<b>${ch.title}</b> — ${objective.toLowerCase()}.`, "s");
     if (ch.boss) TC.audio.play("boss");
+    this.enterDeploy();
+  }
+
+  /* Before turn one the player may shuffle the party around the deploy zone. */
+  enterDeploy() {
+    this.mode = "deploy";
+    this.deploySel = null;
+    this.clearOverlays();
+    for (const t of this.battle.deployZone()) this.r.overlays.move.add(TC.KEY(t.x, t.y));
+    this.hint("Deployment: tap a unit, then a highlighted tile. Start when ready.");
+    this.refresh();
+  }
+  deployClick(tile, clicked) {
+    const b = this.battle;
+    if (this.deploySel) {
+      if (b.placeUnit(this.deploySel, tile.x, tile.y)) { TC.audio.play("move"); this.deploySel = null; this.r.cursor = tile; }
+      else if (clicked && clicked.team === "P" && !clicked.npc) this.deploySel = clicked;
+      else { TC.audio.play("cancel"); this.deploySel = null; }
+    } else if (clicked && clicked.team === "P" && !clicked.npc) {
+      this.deploySel = clicked; TC.audio.play("select");
+    }
+    this.showInspect(clicked);
+    this.hint(this.deploySel ? `Moving ${this.deploySel.name}: tap a highlighted tile (or another unit to swap).`
+                             : "Deployment: tap a unit, then a highlighted tile. Start when ready.");
+    this.refresh();
+  }
+  beginBattle() {
+    if (this.mode !== "deploy") return;
+    this.deploySel = null;
+    this.clearOverlays(); this.hint("");
+    this.mode = "idle";
     this.advance();
   }
 
@@ -191,8 +231,10 @@ class Game {
       this.r.cursor = { x: u.x, y: u.y };
       this.inspecting = u;
       if (this.r.shouldFollow) this.r.focusOn(u.x, u.y);
-      if (u.team === "P") {
+      this.syncThreat();
+      if (u.team === "P" && !u.npc) {
         this.mode = "idle";
+        this.turnSnap = this.difficulty.undoTurn ? this.battle.snapshot() : null;
         TC.audio.play("turn");
         this.log(`<span class="p">${u.name}</span>'s turn.`);
         this.refresh();
@@ -217,6 +259,32 @@ class Game {
     });
   }
 
+  /* Story mode: put the whole turn back the way it was. */
+  rewindTurn() {
+    if (this.busy || !this.turnSnap || !this.battle || this.mode === "enemy") return;
+    const b = this.battle;
+    b.restore(this.turnSnap);
+    for (const u of b.units) this.r.unitFx.delete(u.id);
+    this.mode = "idle"; this.pending = null;
+    this.clearOverlays(); this.hint("");
+    TC.audio.play("cancel");
+    this.log(`<span class="s">Turn rewound.</span>`);
+    b.drain();
+    this.syncThreat();
+    this.refresh();
+  }
+
+  /* Tiles that a charging enemy spell will hit are shown in red. */
+  syncThreat() {
+    const o = this.r.overlays; o.threat.clear();
+    for (const p of this.battle.pending) {
+      const caster = this.battle.units[p.casterId];
+      if (!caster) continue;
+      for (const t of TC.footprint(this.battle.grid, caster, TC.ABILITIES[p.abilityId], p.tx, p.ty)) o.threat.add(TC.KEY(t.x, t.y));
+    }
+    this.r.casters = new Set(this.battle.pending.map(p => p.casterId));
+  }
+
   endTurn() {
     if (this.busy || this.mode === "enemy" || !this.battle || !this.battle.active) return;
     const u = this.battle.active;
@@ -233,15 +301,16 @@ class Game {
     const ch = this.battle.chapter;
     const levelups = [];
     if (win) {
-      const share = Math.round(ch.xp / Math.max(1, this.battle.living("P").length));
-      for (const u of this.battle.units.filter(u => u.team === "P")) {
+      const fighters = this.battle.living("P").filter(u => !u.npc).length;
+      const share = Math.round(ch.xp / Math.max(1, fighters));
+      for (const u of this.battle.units.filter(u => u.team === "P" && !u.npc)) {
         const before = u.level;
         u.gainXp(u.alive ? share : Math.round(share * 0.4), this.battle);
         if (u.level > before) levelups.push(`${u.name} → Lv ${u.level}`);
       }
       // Carry levels forward; the fallen are patched up between chapters.
-      this.progress.party = this.battle.units.filter(u => u.team === "P")
-        .map(u => ({ name: u.name, job: u.job, level: u.level, xp: u.xp }));
+      this.progress.party = this.battle.units.filter(u => u.team === "P" && !u.npc)
+        .map(u => ({ name: u.name, job: u.job, level: u.level, xp: u.xp, jp: u.jp, learned: u.learned.slice() }));
       this.progress.chapter = Math.min(TC.CAMPAIGN.length, TC.CAMPAIGN.indexOf(ch) + 1);
       this.progress.wins++;
       this.save();
@@ -253,12 +322,12 @@ class Game {
            : win ? `The field is yours. ${ch.xp} XP shared across the company.`
            : "Your company is broken. Regroup and try the battle again."}</p>
       ${levelups.length ? `<div class="tip">⬆ ${levelups.join(" · ")}</div>` : ""}
-      <div class="roster">${this.battle.units.filter(u => u.team === "P").map(u =>
+      <div class="roster">${this.battle.units.filter(u => u.team === "P" && !u.npc).map(u =>
         `<div class="r"><div class="n">${u.icon} ${u.name}</div><div class="j">${u.job} · Lv ${u.level}</div>
-         <div class="l">${u.alive ? `${u.hp}/${u.maxHp} HP` : "<span style='color:var(--red)'>fallen</span>"} · ${u.xp}/${u.xpToNext} XP</div></div>`).join("")}</div>
+         <div class="l">${u.alive ? `${u.hp}/${u.maxHp} HP` : "<span style='color:var(--red)'>fallen</span>"} · ${u.xp}/${u.xpToNext} XP · ${u.jp} JP</div></div>`).join("")}</div>
       <div class="row">
         ${done ? `<button class="abtn primary" data-act="title">Main Menu</button>`
-               : win ? `<button class="abtn primary" data-act="next">Next Chapter</button>`
+               : win ? `<button class="abtn primary" data-act="learn">Learn Abilities</button>`
                      : `<button class="abtn primary" data-act="retry">Retry Battle</button>`}
         <button class="abtn" data-act="title">Main Menu</button>
       </div>`);
@@ -267,7 +336,51 @@ class Game {
       TC.audio.play("select");
       if (a.dataset.act === "title") return this.title();
       if (a.dataset.act === "retry") { this.closeModal(); return this.startBattle(ch); }
+      if (a.dataset.act === "learn") return this.learnScreen();
       this.briefing();
+    };
+  }
+
+  /* Spend JP between chapters. Works on the saved party, so it is safe to
+     leave and come back to from the title screen. */
+  learnScreen() {
+    this.mode = "over";
+    const party = this.progress.party;
+    const cards = party.map((p, i) => {
+      const job = TC.JOBS[p.job];
+      const known = new Set((job.starting || job.abilities).concat(p.learned || []));
+      const options = job.abilities.filter(id => !known.has(id) && TC.ABILITIES[id].jp);
+      const rows = options.length ? options.map(id => {
+        const a = TC.ABILITIES[id], can = (p.jp || 0) >= a.jp;
+        return `<div class="learn-row">
+          <div><b>${a.name}</b> <span class="cost">${a.jp} JP${a.mp ? ` · ${a.mp} MP` : ""}${a.charge ? " · charges" : ""}</span><div class="ldesc">${a.desc}</div></div>
+          <button class="abtn ${can ? "primary" : ""}" data-act="learn" data-i="${i}" data-id="${id}" ${can ? "" : "disabled"}>Learn</button>
+        </div>`;
+      }).join("") : `<div class="ldesc">Everything learned.</div>`;
+      const knownList = [...known].map(id => TC.ABILITIES[id].name).join(", ");
+      return `<div class="r learn-card">
+        <div class="n" style="color:${job.color}">${job.icon} ${p.name} <span class="cost">${p.jp || 0} JP</span></div>
+        <div class="j">${p.job} · Lv ${p.level}</div>
+        <div class="ldesc">Knows: ${knownList}</div>
+        ${rows}
+      </div>`;
+    }).join("");
+    this.modal(`
+      <h2>Learn Abilities</h2>
+      <p>JP is earned alongside XP. Anything you don't buy now is still there next time.</p>
+      <div class="roster learn">${cards}</div>
+      <div class="row"><button class="abtn primary" data-act="next">Next Chapter</button>
+      <button class="abtn" data-act="title">Main Menu</button></div>`);
+    $("sheet").onclick = e => {
+      const a = e.target.closest("[data-act]"); if (!a) return;
+      TC.audio.play("select");
+      if (a.dataset.act === "title") return this.title();
+      if (a.dataset.act === "next") return this.briefing();
+      const p = party[+a.dataset.i], ab = TC.ABILITIES[a.dataset.id];
+      if (p && ab && (p.jp || 0) >= ab.jp) {
+        p.jp -= ab.jp; p.learned = (p.learned || []).concat(a.dataset.id);
+        this.save(); TC.audio.play("levelup"); this.learnScreen();
+      }
     };
   }
 
@@ -327,13 +440,39 @@ class Game {
       }
       case "cast": {
         const p = { x: e.tx, y: e.ty, h: g.height(e.tx, e.ty) };
-        if (e.ability.type === "mag" || e.ability.type === "heal" || e.ability.type === "buff" || e.ability.type === "revive" || e.ability.type === "drain") {
+        const magical = ["mag", "heal", "buff", "revive", "drain"].includes(e.ability.type);
+        const dist = TC.manhattan(e.unit, { x: e.tx, y: e.ty });
+        if (magical) {
           r.burst(p.x, p.y, p.h + .5, e.ability.type === "heal" ? "#8ce8a8" : "#c9a6ff", 20, 1.3);
           TC.audio.play("magic");
         }
+        // A melee swing lunges; anything thrown or shot arcs across the board.
+        if (dist <= 1 && dist > 0 && !magical) r.lunge(e.unit, { x: e.tx, y: e.ty });
+        else if (dist > 1 && e.ability.type !== "buff" && e.ability.type !== "revive" && !e.ability.shape)
+          r.projectile(e.unit, { x: e.tx, y: e.ty }, magical ? "#c9a6ff" : "#ffe9a8");
         this.log(`<span class="${e.unit.team === "P" ? "p" : "e"}">${e.unit.name}</span> uses <b>${e.ability.name}</b>.`, e.unit.team === "P" ? "p" : "e");
-        return e.ability.mp ? 200 : 90;
+        return dist > 1 && !e.ability.shape ? 330 : e.ability.mp ? 200 : 140;
       }
+      case "charge": {
+        for (const t of e.tiles) r.burst(t.x, t.y, g.height(t.x, t.y) + .2, "#ff9d5c", 4, .6);
+        this.log(`<span class="${e.unit.team === "P" ? "p" : "e"}">${e.unit.name}</span> begins casting <b>${e.ability.name}</b>…`, e.unit.team === "P" ? "p" : "e");
+        this.syncThreat();
+        return 220;
+      }
+      case "land": {
+        for (const t of e.tiles) r.burst(t.x, t.y, g.height(t.x, t.y) + .4, "#ffb066", 14, 1.4);
+        r.shakeBy(8);
+        TC.audio.play("magic");
+        this.log(`<b>${e.ability.name}</b> lands!`, "s");
+        this.syncThreat();
+        return 200;
+      }
+      case "fizzle":
+        this.log(`<span class="s">${TC.ABILITIES[e.spell.abilityId].name} fizzles — its caster is gone.</span>`);
+        this.syncThreat();
+        return 120;
+      case "rewind":
+        return 0;
       case "ko":
         r.burst(e.unit.x, e.unit.y, g.height(e.unit.x, e.unit.y) + .4, "#ffffff", 26, 2);
         r.shakeBy(10);
@@ -385,7 +524,7 @@ class Game {
   }
 
   /* -------------------------------------------------------- player input */
-  get me() { return this.battle && this.battle.active && this.battle.active.team === "P" ? this.battle.active : null; }
+  get me() { const a = this.battle && this.battle.active; return a && a.team === "P" && !a.npc ? a : null; }
 
   clearOverlays() {
     const o = this.r.overlays;
@@ -490,7 +629,8 @@ class Game {
               ${side !== "front" ? `· <span style="color:var(--gold)">${side}</span>` : ""}
               ${lethal ? `<span class="ko">· KO</span>` : ""}</div>`;
     }).join("");
-    box.innerHTML = `<div class="big">${ab.name}${ab.mp ? ` <span class="cost">${ab.mp} MP</span>` : ""}</div>${rows}`;
+    box.innerHTML = `<div class="big">${ab.name}${ab.mp ? ` <span class="cost">${ab.mp} MP</span>` : ""}</div>${rows}` +
+      (ab.charge ? `<div class="sub" style="color:var(--gold)">⏱ charges first — lands on whoever is there then</div>` : "");
     this.syncHint();
   }
 
@@ -500,6 +640,7 @@ class Game {
     const u = this.me;
     const clicked = this.battle.unitAt(tile.x, tile.y) || this.battle.koAt(tile.x, tile.y);
 
+    if (this.mode === "deploy") return this.deployClick(tile, clicked);
     if (!u) { this.showInspect(clicked); return; }
 
     if (this.mode === "move") {
@@ -585,7 +726,7 @@ class Game {
       <div class="bar hp"><i style="width:${u.hp / u.maxHp * 100}%"></i></div>
       ${u.maxMp ? `<div class="srow"><span>MP</span><b>${u.mp}/${u.maxMp}</b></div>
       <div class="bar mp"><i style="width:${u.mp / u.maxMp * 100}%"></i></div>` : ""}
-      ${u.team === "P" && !compact ? `<div class="srow xprow"><span>XP</span><b>${u.xp}/${u.xpToNext}</b></div>
+      ${u.team === "P" && !compact && !u.npc ? `<div class="srow xprow"><span>XP</span><b>${u.xp}/${u.xpToNext}</b> <span style="color:var(--dim)">· ${u.jp} JP</span></div>
       <div class="bar xp"><i style="width:${u.xp / u.xpToNext * 100}%"></i></div>` : ""}
       <div class="grid4">
         <span>ATK <b>${u.stat("atk")}</b></span><span>DEF <b>${u.stat("def")}</b></span>
@@ -616,17 +757,31 @@ class Game {
     const slots = window.innerWidth < 520 ? 4 : window.innerWidth < 860 ? 5 : 7;
     const order = (u ? [u] : []).concat(b.forecast(u ? slots - 1 : slots));
     for (const f of order) {
-      const s = el("div", "slot" + (f === u ? " now" : ""));
-      s.innerHTML = `<span class="pip" style="background:${f.color}22;border:1px solid ${f.color}">${f.icon}</span><span class="nm">${f.name}</span>`;
-      s.onclick = () => this.showInspect(f);
+      const s = el("div", "slot" + (f === u ? " now" : "") + (f.spell ? " spell" : ""));
+      if (f.spell) {
+        const ab = TC.ABILITIES[f.spell.abilityId], caster = b.units[f.spell.casterId];
+        s.innerHTML = `<span class="pip" style="background:#ff9d5c22;border:1px dashed #ff9d5c">✦</span><span class="nm">${ab.name}</span>`;
+        s.title = `${caster ? caster.name : "?"}'s ${ab.name} is charging`;
+      } else {
+        s.innerHTML = `<span class="pip" style="background:${f.color}22;border:1px solid ${f.color}">${f.icon}</span><span class="nm">${f.name}</span>`;
+        s.onclick = () => this.showInspect(f);
+      }
       tl.appendChild(s);
     }
 
     // Action bar
     const bar = $("actionbar");
     bar.innerHTML = "";
-    if (this.mode === "enemy" || this.mode === "over" || this.mode === "busy" || !u || u.team !== "P") {
-      if (this.mode === "enemy") bar.appendChild(el("div", "abtn", "⏳ Enemy turn…"));
+    if (this.mode === "deploy") {
+      const z = this.battle.deployZone().length;
+      bar.appendChild(el("div", "abtn", `📍 Deploy (${z} tiles)`));
+      const go = el("button", "abtn primary", "⚔ Start Battle");
+      go.onclick = () => { TC.audio.play("select"); this.beginBattle(); };
+      bar.appendChild(go);
+      return;
+    }
+    if (this.mode === "enemy" || this.mode === "over" || this.mode === "busy" || !u || u.team !== "P" || u.npc) {
+      if (this.mode === "enemy") bar.appendChild(el("div", "abtn", u && u.npc ? `⏳ ${u.name}…` : "⏳ Enemy turn…"));
       return;
     }
     const add = (label, cls, fn, disabled, key) => {
@@ -648,13 +803,14 @@ class Game {
         const a = TC.ABILITIES[id];
         const cd = u.cooldowns[a.id] || 0;
         const cannot = u.acted || u.mp < (a.mp || 0) || cd > 0;
-        add(`${a.name}${a.mp ? ` <span class="cost">${a.mp}MP</span>` : ""}${cd ? ` <span class="cost">${cd}t</span>` : ""}`,
+        add(`${a.name}${a.mp ? ` <span class="cost">${a.mp}MP</span>` : ""}${a.charge ? ` <span class="cost">⏱</span>` : ""}${cd ? ` <span class="cost">${cd}t</span>` : ""}`,
             "", () => this.enterTarget({ ability: a }), cannot);
       }
       const itemIds = Object.keys(b.items).filter(k => b.items[k] > 0);
       if (itemIds.length && !u.acted) {
         add("🎒 Item", "", () => this.itemMenu(), false, "I");
       }
+      if (this.turnSnap && (u.moved || u.acted)) add("⟲ Rewind", "", () => this.rewindTurn(), false, "R");
       add("⏹ Wait", "primary", () => this.endTurn(), false, "␣");
     } else if (this.mode === "move" || this.mode === "target") {
       add("✕ Cancel", "danger", () => this.cancel(), false, "Esc");
@@ -777,6 +933,8 @@ class Game {
       else if (k === "i") { if (this.mode === "idle") this.itemMenu(); }
       else if (k === "h") this.help(() => this.closeModal());
       else if (k === "f") this.r.fit();
+      else if (k === "r") this.rewindTurn();
+      else if (k === "enter") { if (this.mode === "deploy") this.beginBattle(); }
       else if (k === "tab") {
         e.preventDefault();
         const list = this.battle ? this.battle.living() : [];

@@ -48,7 +48,21 @@ const server = http.createServer((req,res)=>{
     await page.click('[data-act="new"]');
     check('briefing shown', await page.locator('#sheet h2').innerText().then(t=>t.includes('Chapter 1')));
     await page.click('[data-act="go"]');
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(800);
+
+    // Deployment phase: move one unit inside the zone, then start.
+    const deploy = await page.evaluate(() => {
+      const g = window.TCGAME, b = g.battle;
+      if (g.mode !== 'deploy') return { mode: g.mode };
+      const u = b.units[0], before = { x: u.x, y: u.y };
+      const zone = b.deployZone().filter(t => !b.unitAt(t.x, t.y));
+      g.onClick({ x: u.x, y: u.y });
+      g.onClick(zone[0]);
+      return { mode: 'deploy', moved: u.x !== before.x || u.y !== before.y, zone: zone.length };
+    });
+    check('deployment phase lets the player reposition', deploy.mode === 'deploy' && deploy.moved === true, JSON.stringify(deploy));
+    await page.click('#actionbar .primary');
+    await page.waitForTimeout(1200);
 
     check('modal closed, battle running', !(await page.isVisible('#modal.on')));
     check('no JS errors so far', errors.length===0, errors.slice(0,2).join(' | '));
@@ -153,6 +167,26 @@ const server = http.createServer((req,res)=>{
           await page.locator('#sheet h1').innerText().catch(()=>'-'));
     check('progress saved after a win', fight.over!=='victory' ||
           await page.evaluate(()=>!!localStorage.getItem('tc.save.v2')));
+    if (fight.over === 'victory') {
+      await page.click('[data-act="learn"]');
+      await page.waitForTimeout(300);
+      const learn = await page.evaluate(() => ({
+        cards: document.querySelectorAll('.learn-card').length,
+        rows: document.querySelectorAll('.learn-row').length,
+        jp: window.TCGAME.progress.party.map(p => p.jp),
+      }));
+      check('learn screen lists the party and abilities', learn.cards === 5 && learn.rows > 0, JSON.stringify(learn));
+      const bought = await page.evaluate(() => {
+        const g = window.TCGAME;
+        // Give one unit enough JP, buy something, confirm it persists.
+        g.progress.party[0].jp = 999; g.learnScreen();
+        const btn = document.querySelector('.learn-row button:not([disabled])');
+        if (!btn) return { ok: false };
+        btn.click();
+        return { ok: true, learned: g.progress.party[0].learned, jp: g.progress.party[0].jp };
+      });
+      check('learning an ability spends JP and persists', bought.ok && bought.learned.length === 1 && bought.jp < 999, JSON.stringify(bought));
+    }
     check('no JS errors during full battle', errors.length===0, errors.slice(0,3).join(' | '));
 
     if (process.env.SHOT_DIR) await page.screenshot({ path: `${process.env.SHOT_DIR}/shot-${vp.name}-end.png` });

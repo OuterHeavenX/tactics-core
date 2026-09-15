@@ -40,6 +40,19 @@ facing changes how much damage it takes.
   points.
 - **Readable numbers.** Before you commit, the preview shows expected damage,
   hit chance, which side you are striking from, and whether the blow is lethal.
+- **Cast times.** Big spells — Fire, Frost, Meteor, Judgment, Dark Pulse — do not
+  land when cast. They charge on the timeline and hit whatever is standing there
+  when they resolve, so you can walk out of one, and so can the enemy. The tiles
+  under a charging spell glow, the caster gets a ring, and the timeline shows
+  the spell as its own entry.
+- **Learning.** Every action earns JP alongside XP. Between chapters you spend
+  it on new abilities — Rally, Guard Break, Judgment, Leg Shot, Arrow Rain,
+  Frost, Meteor, Regen, Cura, Haste, Raise — so the party you finish with is
+  not the party you started with.
+- **Deployment.** Before turn one you place your five units anywhere in the
+  deploy zone. Cliffs and choke points are decided here.
+- **Difficulty.** Story (enemies a level lower, and you can rewind any turn),
+  Normal, or Hard (two levels higher, no rewinds).
 
 ### The party
 
@@ -49,11 +62,12 @@ facing changes how much damage it takes.
 | Agrias | Holy Knight | Stasis Sword — a ranged holy line attack that can Slow. Protect. |
 | Mustadio | Archer | Power Shot, Arrow Rain. +25% damage from higher ground. |
 | Rapha | Mage | Fire, Bolt, Frost. Regains MP whenever she Waits. |
-| Alma | Priest | Cure, Cura, Protect and **Raise** — the fallen are not gone. |
+| Alma | Priest | Cure, Protect, and — once learned — Regen, Cura, Haste and **Raise**. |
 
 Enemies get their own kit: goblins fight harder in packs and poison you, orcs
 cleave a whole radius, shades float over height limits and drain HP, bandit
-archers camp the high walls, and the chapter-4 Necromancer keeps clawing
+archers camp the high walls, dark knights counter and break your guard, the
+dragon breathes a three-deep cone of fire, and the Necromancer keeps clawing
 skeletons out of the ground until you cut the head off.
 
 ### The campaign
@@ -61,7 +75,13 @@ skeletons out of the ground until you cut the head off.
 1. **Ambush** — open field, a lesson in facing.
 2. **The Sluice Gate** — bridges and water, archers on the high walls.
 3. **Ziggurat of Dust** — four terraces and a lava pit; Jump decides your route.
-4. **Necrohol** — a boss who summons. Kill him and the battle ends.
+4. **Grog Hill** — a night ambush from every corner, and a caravan master who
+   cannot fight. If he dies, you lose. Body-block for him.
+5. **Bervenia Ramparts** — a wall two steps up from the rubble, stairs at each
+   end, dark knights in the courtyard.
+6. **Wyrm's Roost** — a dragon in a crater. Never stand in front of it, never
+   stand next to it in a group.
+7. **Necrohol** — a boss who summons. Kill him and the battle ends.
 
 Units carry levels and XP between chapters; progress is saved to local storage
 (`localStorage` in the browser build, `user://` in Godot).
@@ -76,6 +96,8 @@ Units carry levels and XP between chapters; progress is saved to local storage
 | Rotate camera | `Q` / `E` |
 | Wait (end turn) | `Space` |
 | Undo move | `U` |
+| Rewind whole turn (Story mode) | `R` |
+| Start battle (deployment) | `Enter` |
 | Cancel / pause | `Esc` |
 | Recentre | `F` |
 | Move / Item | `M` / `I` |
@@ -151,6 +173,15 @@ godot/                  the Godot 4 reconstruction (same architecture)
 tools/                  validators, generators and test runners
 ```
 
+### Sprites
+
+`assets/sprites.json` describes an optional pixel-art atlas. Drop a
+`sprites.png` beside it (a 4×4 grid of 128 px cells in job order), set
+`"enabled": true`, and the HTML5 build draws units as billboarded sprites;
+otherwise it draws the vector pawns. A sheet was generated with SpriteCook for this project (asset
+`2907f0e2-4de4-4e65-9825-3dcdba754438` on the connected account) but the
+sandbox could not download it, so it ships un-integrated.
+
 ### One source of truth
 
 `js/data.js` is the only place game content lives. `tools/gen-godot-data.js`
@@ -188,12 +219,18 @@ What they actually check:
   must always reach a result (no stalemates) and must be winnable without being
   free. The current curve is roughly 100% / 87% / 58% / 57%.
 - **Parity** — deterministic scenarios recorded from the JavaScript engine are
-  replayed through the GDScript engine and diffed exactly: ~2,950 comparisons
-  covering stats, hit chances, expected damage, reachable sets, travel-cost
-  fields, AI decisions and turn order.
-- **The real thing in a real browser** — a campaign is started, a unit is moved
-  and the move undone, attacks are resolved and a whole battle is played to a
-  victory screen, on desktop, tablet and phone viewports, with zero console
+  replayed through the GDScript engine and diffed exactly: ~4,250 comparisons
+  covering stats, known abilities, hit chances, expected damage, reachable
+  sets, travel-cost fields, deploy zones, breath cones, AI decisions and turn
+  order.
+- **New systems** — a charged spell does not resolve on cast, shows on the
+  timeline, and lands on empty ground if its target walks away; cones are the
+  right shape; rewind restores HP, position and flags; learning spends JP and
+  refuses a repeat; losing the civilian loses the battle.
+- **The real thing in a real browser** — a campaign is started, a unit is
+  repositioned in deployment, moved and the move undone, attacks are resolved,
+  a whole battle is played to a victory screen, and an ability is bought on
+  the learn screen — on desktop, tablet and phone viewports, with zero console
   errors.
 
 ---

@@ -23,7 +23,10 @@ var overlay_move: Dictionary = {}       # Vector2i -> true
 var overlay_act: Dictionary = {}
 var overlay_aoe: Dictionary = {}
 var overlay_path: Array[Vector2i] = []
+var overlay_threat: Dictionary = {}     # tiles a charging enemy spell will hit
+var casters: Dictionary = {}            # unit id -> true while a spell is in the air
 var cursor = null                       # Vector2i or null
+var _shots: Array = []                  # projectiles in flight
 
 var _time := 0.0
 var _tile_order: Array[Vector2i] = []
@@ -36,7 +39,7 @@ var _particles: Array = []
 const JOB_LETTER := {
 	"Knight": "K", "HolyKnight": "H", "Archer": "A", "Mage": "M", "Priest": "P",
 	"Goblin": "g", "Orc": "O", "Bandit": "b", "Shade": "s", "Skeleton": "k",
-	"Necromancer": "N",
+	"Necromancer": "N", "DarkKnight": "d", "Dragon": "D", "Merchant": "m",
 }
 
 func setup(p_battle: Battle) -> void:
@@ -57,6 +60,17 @@ func clear_overlays() -> void:
 	overlay_act.clear()
 	overlay_aoe.clear()
 	overlay_path.clear()
+
+## A short step toward the target and back: the melee swing.
+func lunge(u: Unit, toward: Vector2i) -> void:
+	var f := _unit_fx(u)
+	f["lunge"] = {"d": Vector2(toward - u.pos), "t": 0.0}
+
+## A glowing dot travelling on a parabola from a unit to a tile.
+func projectile(from: Unit, to: Vector2i, color: Color) -> void:
+	_shots.append({"a": Vector2(from.pos), "b": Vector2(to), "t": 0.0, "color": color,
+		"h0": float(battle.grid.height_at(from.pos.x, from.pos.y)) + 0.9,
+		"h1": float(battle.grid.height_at(to.x, to.y)) + 0.6})
 
 func rotate_by(d: int) -> void:
 	rot_from = rot
@@ -189,6 +203,10 @@ func _process(delta: float) -> void:
 		var f: Dictionary = _fx[key]
 		f["bob"] = float(f["bob"]) + delta * 2.4
 		f["flash"] = maxf(0.0, float(f["flash"]) - delta * 3.4)
+		if f.has("lunge") and f["lunge"] != null:
+			f["lunge"]["t"] = float(f["lunge"]["t"]) + delta * 6.0
+			if float(f["lunge"]["t"]) >= 1.0:
+				f["lunge"] = null
 
 	for key in _anims.keys().duplicate():
 		var a: Dictionary = _anims[key]
@@ -203,6 +221,11 @@ func _process(delta: float) -> void:
 				emit_signal("walk_finished", u)
 				if cb.is_valid():
 					cb.call()
+
+	for i in range(_shots.size() - 1, -1, -1):
+		_shots[i]["t"] = float(_shots[i]["t"]) + delta * 3.2
+		if float(_shots[i]["t"]) >= 1.0:
+			_shots.remove_at(i)
 
 	for i in range(_particles.size() - 1, -1, -1):
 		var q: Dictionary = _particles[i]
@@ -255,6 +278,17 @@ func _draw() -> void:
 			for u in buckets[s]:
 				_draw_unit(u)
 
+	for sh in _shots:
+		var t: float = sh["t"]
+		var a: Vector2 = sh["a"]
+		var bpos: Vector2 = sh["b"]
+		var pos := a.lerp(bpos, t)
+		var h: float = lerpf(float(sh["h0"]), float(sh["h1"]), t) + sin(t * PI) * 1.6
+		var sp := project(pos.x, pos.y, h)
+		var col: Color = sh["color"]
+		draw_circle(sp, 5.0, Color(col.r, col.g, col.b, 0.35))
+		draw_circle(sp, 3.2, col)
+
 	for q in _particles:
 		var p := project(float(q["x"]), float(q["y"]), float(q["h"]))
 		var c: Color = q["color"]
@@ -277,7 +311,14 @@ func _draw() -> void:
 
 func _unit_grid_pos(u: Unit) -> Vector2:
 	if not _anims.has(u.id):
-		return Vector2(u.pos)
+		var base := Vector2(u.pos)
+		var f := _unit_fx(u)
+		if f.has("lunge") and f["lunge"] != null:
+			var l: Dictionary = f["lunge"]
+			var d: Vector2 = l["d"]
+			var k := sin(minf(1.0, float(l["t"])) * PI) * 0.35
+			base += d.normalized() * k
+		return base
 	var a: Dictionary = _anims[u.id]
 	var path: Array = a["path"]
 	var idx: int = a["i"]
@@ -346,6 +387,8 @@ func _draw_overlay(tile: Vector2i, p: Vector2, diamond: PackedVector2Array) -> v
 		fill = Color(0.91, 0.28, 0.28, 0.46)
 	elif overlay_move.has(tile):
 		fill = Color(0.31, 0.59, 1.0, 0.46)
+	elif overlay_threat.has(tile):
+		fill = Color(1.0, 0.47, 0.24, 0.22 + 0.12 * sin(_time * 6.0))
 	if fill.a > 0.0:
 		draw_colored_polygon(diamond, fill)
 	if overlay_path.has(tile):
@@ -387,7 +430,12 @@ func _draw_unit(u: Unit) -> void:
 	# Ground shadow and the team ring.
 	draw_set_transform(p + Vector2(0, 2), 0.0, Vector2(1.0, 0.5))
 	draw_circle(Vector2.ZERO, 14.0, Color(0, 0, 0, 0.4))
+	if u.npc:
+		team_color = Color(1.0, 0.88, 0.5)
 	draw_arc(Vector2.ZERO, 16.0, 0.0, TAU, 24, team_color, 2.0)
+	if alive and casters.has(u.id):
+		draw_arc(Vector2.ZERO, 21.0, _time * 1.5, _time * 1.5 + TAU * 0.8, 24,
+			Color(1.0, 0.62, 0.36, 0.55 + 0.35 * sin(_time * 6.0)), 2.0)
 	if battle.active == u and alive:
 		draw_arc(Vector2.ZERO, 20.0, 0.0, TAU, 28,
 			Color(0.91, 0.78, 0.42, 0.5 + 0.4 * sin(_time * 5.0)), 3.0)

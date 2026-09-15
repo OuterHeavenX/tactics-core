@@ -8,8 +8,26 @@
    ========================================================================== */
 var TC = window.TC || (window.TC = {});   /* var, not const: these are classic scripts sharing one global scope */
 
-const KEY = (x, y) => x + "," + y;
-TC.KEY = KEY;
+const KEY = TC.KEY;
+
+/* Optional pixel-art atlas. If assets/sprites.png exists next to assets/
+   sprites.json, units are drawn as billboarded sprites; otherwise the vector
+   pawn below is used. The default atlas layout is a 4x4 grid of 128px cells
+   in GameData job order, which is how tools/README describes the sheet.     */
+class SpriteAtlas {
+  constructor() {
+    this.ready = false; this.img = null; this.cells = {};
+    fetch("assets/sprites.json").then(r => r.ok ? r.json() : null).then(meta => {
+      if (!meta || !meta.enabled) return;     // opt-in, so a clean checkout makes no failing request
+      const img = new Image();
+      img.onload = () => { this.img = img; this.cells = meta.cells || {}; this.scale = meta.scale || 0.5; this.ready = true; };
+      img.onerror = () => { /* no sheet on disk: keep the vector pawns */ };
+      img.src = meta.image || "assets/sprites.png";
+    }).catch(() => {});
+  }
+  cell(job) { return this.ready ? this.cells[job] : null; }
+}
+TC.atlas = new SpriteAtlas();
 
 class Renderer {
   constructor(canvas) {
@@ -23,6 +41,8 @@ class Renderer {
     this.shake = 0;
     this.floaters = [];
     this.particles = [];
+    this.shots = [];
+    this.casters = new Set();
     this.overlays = { move: new Set(), act: new Set(), aoe: new Set(), path: [], threat: new Set() };
     this.cursor = null;
     this.battle = null;
@@ -36,6 +56,8 @@ class Renderer {
     this.unitFx.clear();
     this.floaters.length = 0;
     this.particles.length = 0;
+    this.shots.length = 0;
+    this.casters = new Set();
     this.fit();
   }
 
@@ -195,6 +217,18 @@ class Renderer {
   }
   shakeBy(n) { this.shake = Math.min(18, this.shake + n); }
 
+  /* A short step toward the target and back: the melee swing. */
+  lunge(u, toward) {
+    const f = this.fx(u);
+    f.lunge = { dx: toward.x - u.x, dy: toward.y - u.y, t: 0 };
+  }
+  /* A dot travelling on a parabola from a unit to a tile. */
+  projectile(from, to, color) {
+    const g = this.battle.grid;
+    this.shots.push({ x0: from.x, y0: from.y, h0: g.height(from.x, from.y) + 0.9,
+                      x1: to.x, y1: to.y, h1: g.height(to.x, to.y) + 0.6, t: 0, color });
+  }
+
   /* ------------------------------------------------------------- draw */
   draw(dt) {
     const ctx = this.ctx, b = this.battle;
@@ -321,7 +355,7 @@ class Renderer {
     if (o.aoe.has(k))         { fill = "rgba(255,150,60,.55)"; glow = 1; }
     else if (o.act.has(k))    { fill = "rgba(232,72,72,.46)"; }
     else if (o.move.has(k))   { fill = "rgba(78,150,255,.46)"; }
-    else if (o.threat.has(k)) { fill = "rgba(224,91,91,.16)"; }
+    else if (o.threat.has(k)) { fill = "rgba(255,120,60," + (0.22 + 0.12 * Math.sin(this.time * 6)) + ")"; }
     if (fill) {
       ctx.save();
       ctx.globalAlpha = glow ? .7 + .25 * Math.sin(this.time * 7) : 1;
@@ -404,6 +438,13 @@ class Renderer {
           if (a.i >= a.path.length) { const d = a.onDone; f.anim = null; d && d(); }
         }
       }
+      if (f.lunge) {
+        f.lunge.t += dt * 6;
+        const k = Math.sin(Math.min(1, f.lunge.t) * Math.PI) * 0.35;
+        const n = Math.max(1, Math.abs(f.lunge.dx) + Math.abs(f.lunge.dy));
+        gx += f.lunge.dx / n * k; gy += f.lunge.dy / n * k;
+        if (f.lunge.t >= 1) f.lunge = null;
+      }
       const pr = this.project(gx, gy, h);
       const p = this.toScreen(pr);
       list.push({ depth: pr.depth + 0.5, order: 1, fn: ctx => this.drawUnit(ctx, u, p, z, f, gx, gy, h) });
@@ -421,10 +462,17 @@ class Renderer {
     ctx.globalAlpha = alive ? 1 : .45;
     ctx.fillStyle = "rgba(0,0,0,.4)";
     ctx.beginPath(); ctx.ellipse(p.x, p.y + 2 * z, 13 * z, 7 * z, 0, 0, 6.3); ctx.fill();
-    ctx.strokeStyle = u.team === "P" ? "rgba(120,170,255,.95)" : "rgba(255,120,120,.95)";
+    ctx.strokeStyle = u.npc ? "rgba(255,225,130,.95)" : u.team === "P" ? "rgba(120,170,255,.95)" : "rgba(255,120,120,.95)";
     ctx.lineWidth = 2 * z;
     ctx.beginPath(); ctx.ellipse(p.x, p.y + 2 * z, 15 * z, 8 * z, 0, 0, 6.3); ctx.stroke();
 
+    if (alive && this.casters && this.casters.has(u.id)) {
+      ctx.save();
+      ctx.strokeStyle = "rgba(255,157,92," + (0.55 + 0.35 * Math.sin(this.time * 6)) + ")";
+      ctx.lineWidth = 2 * z; ctx.setLineDash([4 * z, 3 * z]);
+      ctx.beginPath(); ctx.ellipse(p.x, p.y + 2 * z, 21 * z, 11 * z, this.time * 1.5, 0, 6.3); ctx.stroke();
+      ctx.restore();
+    }
     if (active && alive) {
       ctx.strokeStyle = "rgba(232,198,106," + (0.5 + 0.4 * Math.sin(this.time * 5)) + ")";
       ctx.lineWidth = 3 * z;
@@ -451,6 +499,21 @@ class Renderer {
     ctx.closePath(); ctx.fill(); ctx.restore();
 
     const cy = p.y - bodyH * .55 + bob;
+    const cell = TC.atlas.cell(u.job);
+    if (cell) {
+      // Sprite billboard, feet on the tile, tinted white while flashing.
+      const sw = cell.w * TC.atlas.scale * z, sh = cell.h * TC.atlas.scale * z;
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(TC.atlas.img, cell.x, cell.y, cell.w, cell.h, p.x - sw / 2, p.y + bob - sh + 3 * z, sw, sh);
+      if (f.flash > 0) {
+        ctx.save(); ctx.globalCompositeOperation = "source-atop"; ctx.globalAlpha = f.flash * .8;
+        ctx.fillStyle = f.flashColor; ctx.fillRect(p.x - sw / 2, p.y + bob - sh + 3 * z, sw, sh); ctx.restore();
+      }
+      ctx.imageSmoothingEnabled = true;
+      this.drawUnitBars(ctx, u, p, z, cy - bodyH * .72 - Math.max(0, sh - bodyH));
+      ctx.restore();
+      return;
+    }
     // Body: a tapered pawn reads better than a flat circle in isometric.
     const grad = ctx.createLinearGradient(p.x, cy - bodyH / 2, p.x, p.y);
     const base = f.flash > 0 ? f.flashColor : u.color;
@@ -470,8 +533,13 @@ class Renderer {
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
     ctx.fillText(u.icon, p.x, cy - bodyH * .18);
 
-    // HP bar floats above the head.
-    const bw = 30 * z, by = cy - bodyH * .72;
+    this.drawUnitBars(ctx, u, p, z, cy - bodyH * .72);
+    ctx.restore();
+  }
+
+  /* HP/MP bars and status pips, shared by the sprite and vector paths. */
+  drawUnitBars(ctx, u, p, z, by) {
+    const bw = 30 * z;
     ctx.fillStyle = "rgba(6,8,16,.85)"; ctx.fillRect(p.x - bw / 2, by, bw, 4.5 * z);
     const frac = u.hp / u.maxHp;
     ctx.fillStyle = frac > .5 ? "#6fd08c" : frac > .25 ? "#e8c66a" : "#e05b5b";
@@ -491,12 +559,26 @@ class Renderer {
         ctx.fillText(d.icon, p.x - (ids.length - 1) * 5 * z + i * 10 * z, by - 7 * z);
       });
     }
-    ctx.restore();
   }
 
   /* ---------------------------------------------------------- effects */
   collectEffects(list, dt) {
     const g = this.battle.grid;
+    for (let i = this.shots.length - 1; i >= 0; i--) {
+      const s = this.shots[i];
+      s.t += dt * 3.2;
+      if (s.t >= 1) { this.shots.splice(i, 1); continue; }
+      const t = s.t, arc = Math.sin(t * Math.PI) * 1.6;
+      const x = TC.lerp(s.x0, s.x1, t), y = TC.lerp(s.y0, s.y1, t), h = TC.lerp(s.h0, s.h1, t) + arc;
+      const pr = this.project(x, y, h);
+      const p = this.toScreen(pr);
+      list.push({ depth: pr.depth + 0.6, order: 2, fn: ctx => {
+        ctx.fillStyle = s.color;
+        ctx.shadowColor = s.color; ctx.shadowBlur = 10 * this.cam.zoom;
+        ctx.beginPath(); ctx.arc(p.x, p.y, 3.2 * this.cam.zoom, 0, 6.3); ctx.fill();
+        ctx.shadowBlur = 0;
+      } });
+    }
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const q = this.particles[i];
       q.x += q.vx; q.y += q.vy; q.h += q.vz * dt * 2.4; q.vz -= dt * 9;

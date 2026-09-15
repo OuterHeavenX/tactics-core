@@ -181,6 +181,50 @@ func tiles_in_range(ox: int, oy: int, ability: Dictionary) -> Array[Vector2i]:
 			out.append(Vector2i(x, y))
 	return out
 
+## A cone `len` tiles deep opening from the caster toward `aim`. Row k of the
+## cone is 2*floor(k/2)+1 wide, so breath reaches three tiles straight ahead
+## and fans out to the sides.
+func cone_tiles(cx: int, cy: int, ax: int, ay: int, len: int) -> Array[Vector2i]:
+	var dir: Vector2i = Iso.DIRS[Iso.facing_from_delta(ax - cx, ay - cy)]
+	var side := Vector2i(1, 0) if dir.x == 0 else Vector2i(0, 1)
+	var out: Array[Vector2i] = []
+	for k in range(1, len + 1):
+		var half := k / 2
+		for w in range(-half, half + 1):
+			var p := Vector2i(cx, cy) + dir * k + side * w
+			if not is_void(p.x, p.y):
+				out.append(p)
+	return out
+
+## Every tile an ability lands on, given who is casting and where it is aimed.
+func footprint(actor, ability: Dictionary, target: Vector2i) -> Array[Vector2i]:
+	if ability.get("shape", "") == "cone":
+		return cone_tiles(actor.pos.x, actor.pos.y, target.x, target.y, int(ability.get("coneLen", 3)))
+	if int(ability.get("aoe", 0)) > 0:
+		return aoe_tiles(target.x, target.y, ability)
+	return [target] as Array[Vector2i]
+
+## Where the player may stand at the start of a chapter: every walkable tile
+## within two steps of a default deploy slot that no enemy spawns on.
+func deploy_zone(chapter: Dictionary) -> Array[Vector2i]:
+	var taken := {}
+	for e in chapter["enemies"]:
+		taken[Vector2i(int(e[2]), int(e[3]))] = true
+	if chapter.has("npc"):
+		taken[Vector2i(int(chapter["npc"][2]), int(chapter["npc"][3]))] = true
+	var seen := {}
+	var zone: Array[Vector2i] = []
+	for slot in chapter["deploy"]:
+		var origin := Vector2i(int(slot[0]), int(slot[1]))
+		for dy in range(-2, 3):
+			for dx in range(-2 + absi(dy), 2 - absi(dy) + 1):
+				var p := origin + Vector2i(dx, dy)
+				if seen.has(p) or taken.has(p) or not walkable(p.x, p.y):
+					continue
+				seen[p] = true
+				zone.append(p)
+	return zone
+
 ## Splash footprint centred on a tile.
 func aoe_tiles(cx: int, cy: int, ability: Dictionary) -> Array[Vector2i]:
 	var r: int = int(ability.get("aoe", 0))

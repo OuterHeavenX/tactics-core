@@ -125,9 +125,10 @@ console.log("Combat rules");
   }
   check("turn engine never wakes the fallen", !pickedDead);
 
-  const nb = new TC.Battle(TC.CAMPAIGN[3], TC.PARTY.map(p => ({ ...p, level: 7 })));
-  const necro = nb.living("E").find(e => e.passive === "boss");
-  check("boss present in chapter 4", !!necro);
+  const finale = TC.CAMPAIGN.find(c => c.map === "necrohol");
+  const nb = new TC.Battle(finale, TC.PARTY.map(p => ({ ...p, level: 9 })));
+  const necro = nb.living("E").find(e => e.job === "Necromancer");
+  check("boss present in the finale", !!necro);
   const summon = TC.ABILITIES.summonBone;
   for (let i = 0; i < 12; i++) {
     necro.mp = necro.maxMp; necro.cooldowns = {};
@@ -138,13 +139,74 @@ console.log("Combat rules");
   check("summons are capped", bones <= 7, `${bones} skeletons after 12 attempts`);
 }
 
+/* ---------------------------------------------------- charge, cone, rewind -- */
+console.log("Cast-time spells, cones, rewind, learning");
+{
+  const b = new TC.Battle(TC.CAMPAIGN[0], TC.PARTY.map(p => ({ ...p, level: 3 })));
+  const mage = b.units.find(u => u.job === "Mage"), gob = b.living("E")[0];
+  mage.x = gob.x - 2; mage.y = gob.y;
+  const hp = gob.hp;
+  const r = b.useAbility(mage, TC.ABILITIES.fire, gob.x, gob.y);
+  check("a charged spell does not resolve on cast", !!r.charging && gob.hp === hp && b.pending.length === 1);
+  check("the timeline shows the pending spell", b.forecast(8).some(e => e.spell));
+  gob.x += 3;                                             // walk out of it
+  for (const u of b.units) u.ct = 0;
+  let guard = 0; while (b.pending.length && guard++ < 30) { b.beginTurn(); b.endTurn(b.active); }
+  check("a dodged spell lands on empty ground", gob.hp === hp && b.pending.length === 0);
+
+  const roost = TC.CAMPAIGN.find(c => c.map === "roost");
+  const rb = new TC.Battle(roost, TC.PARTY.map(p => ({ ...p, level: 8 })));
+  const dragon = rb.living("E").find(u => u.job === "Dragon");
+  const cone = TC.coneTiles(rb.grid, dragon.x, dragon.y, dragon.x, dragon.y + 1, 3);
+  check("breath cone is 1+3+3 tiles deep", cone.length === 7, JSON.stringify(cone.map(t => t.x + "," + t.y)));
+  check("cone never includes the caster", !cone.some(t => t.x === dragon.x && t.y === dragon.y));
+
+  const s = new TC.Battle(TC.CAMPAIGN[0], TC.PARTY.map(p => ({ ...p, level: 1 })));
+  const u = s.beginTurn(); const snap = s.snapshot();
+  const victim = s.units[5], before = victim.hp; victim.hp = 1; u.x = 9; u.acted = true;
+  s.restore(snap);
+  check("rewind restores HP, position and flags", victim.hp === before && u.x !== 9 && !u.acted);
+
+  const k = s.units[0]; k.jp = 500;
+  check("learnable lists unknown JP abilities", k.learnable().includes("rally") && !k.abilities.includes("rally"));
+  check("learning spends JP and adds the ability", k.learn("rally") && k.jp === 350 && k.abilities.includes("rally"));
+  check("cannot learn twice or without JP", !k.learn("rally") && !s.units[1].learn("judgment"));
+
+  // Rewinding twice in one turn must not leak the first rewind's state.
+  const snap2 = s.snapshot();
+  s.units[5].addStatus("protect", 3); s.restore(snap2);
+  s.units[5].addStatus("protect", 3); s.restore(snap2);
+  check("a second rewind still restores a clean state", !s.units[5].has("protect"));
+
+  // A charged spell that kills the last enemy must end the battle at once.
+  const last = new TC.Battle(TC.CAMPAIGN[0], TC.PARTY.map(p => ({ ...p, level: 9 })));
+  const foes = last.living("E"); const keep = foes[0];
+  for (const f of foes) if (f !== keep) f.hp = 0;
+  const caster = last.units.find(u => u.job === "Mage");
+  caster.x = keep.x - 2; caster.y = keep.y; keep.hp = 1;
+  last.useAbility(caster, TC.ABILITIES.fire, keep.x, keep.y);
+  for (const u of last.units) u.ct = 0;
+  const next = last.beginTurn();
+  check("a spell that lands the killing blow ends the battle immediately", next === null && last.over === "victory",
+    `next=${next && next.name} over=${last.over}`);
+  check("deploy zone is a walkable superset of the slots", s.deployZone().length >= TC.PARTY.length &&
+    s.deployZone().every(t => s.grid.walkable(t.x, t.y)));
+
+  const pb = new TC.Battle(TC.CAMPAIGN.find(c => c.objective === "protect"), TC.PARTY.map(p => ({ ...p, level: 5 })));
+  const npc = pb.units.find(x => x.npc);
+  check("protect chapter fields an npc on the player side", !!npc && npc.team === "P" && npc.abilities.length === 0);
+  npc.hp = 0;
+  check("losing the npc loses the battle", pb.checkEnd() && pb.over === "defeat");
+}
+
 /* -------------------------------------------------------------- balance -- */
 console.log(`Campaign balance (AI vs AI, ${RUNS} runs each)`);
 for (let ci = 0; ci < TC.CAMPAIGN.length; ci++) {
   const ch = TC.CAMPAIGN[ci];
   let wins = 0, losses = 0, stalls = 0, turns = 0;
   for (let i = 0; i < RUNS; i++) {
-    const b = new TC.Battle(ch, TC.PARTY.map(p => ({ ...p, level: 1 + ci * 2 })));
+    // The party is assumed to arrive at roughly the enemies' level.
+    const b = new TC.Battle(ch, TC.PARTY.map(p => ({ ...p, level: ch.enemyLevel || 1 + ci * 2 })));
     let guard = 0;
     while (!b.checkEnd() && guard++ < 400) {
       const u = b.beginTurn();

@@ -23,14 +23,25 @@ function scenario(chapterId) {
 }
 
 const out = { chapters: {} };
-for (const chapterId of ["ch1", "ch3", "ch4"]) {
+for (const chapterId of ["ch1", "ch3", "ch4", "ch6", "ch7"]) {
   const b = scenario(chapterId);
-  const rec = { units: [], combat: [], reach: [], field: [], plans: [], forecast: [] };
+  const rec = { units: [], combat: [], reach: [], field: [], plans: [], forecast: [], cones: [], zone: null };
+
+  // Deploy zone and cone footprints are pure geometry: record them exactly.
+  const zone = b.deployZone();
+  rec.zone = { count: zone.length, sum: zone.reduce((t, q) => t + q.x * 31 + q.y * 17, 0) };
+  for (const u of b.units) {
+    if (u.job !== "Dragon") continue;
+    for (const [dx, dy] of TC.DIRS) {
+      const cone = TC.coneTiles(b.grid, u.x, u.y, u.x + dx, u.y + dy, 3);
+      rec.cones.push({ dx, dy, count: cone.length, sum: cone.reduce((t, q) => t + q.x * 31 + q.y * 17, 0) });
+    }
+  }
 
   for (const u of b.units) {
     rec.units.push({
-      name: u.name, job: u.job, team: u.team, x: u.x, y: u.y, facing: u.facing,
-      level: u.level, hp: u.hp, maxHp: u.maxHp, mp: u.mp, maxMp: u.maxMp,
+      name: u.name, job: u.job, team: u.team, x: u.x, y: u.y, facing: u.facing, npc: !!u.npc,
+      level: u.level, hp: u.hp, maxHp: u.maxHp, mp: u.mp, maxMp: u.maxMp, abilities: u.abilities.slice(),
       atk: u.stat("atk"), def: u.stat("def"), mag: u.stat("mag"), res: u.stat("res"),
       spd: u.stat("spd"), move: u.stat("move"), jump: u.stat("jump"), ct: u.ct,
     });
@@ -78,7 +89,7 @@ for (const chapterId of ["ch1", "ch3", "ch4"]) {
     });
   }
 
-  rec.forecast = b.forecast(8).map(u => u.name);
+  rec.forecast = b.forecast(8).map(u => u.spell ? "spell" : u.name);
   out.chapters[chapterId] = rec;
 }
 

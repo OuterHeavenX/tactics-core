@@ -15,7 +15,9 @@ const SAVE_PATH := "user://tactics_core_save.json"
 
 var battle: Battle
 var progress: Dictionary = {}
-var mode := "title"                     # title | idle | move | target | enemy | busy | over
+var mode := "title"                     # title | deploy | idle | move | target | enemy | busy | over
+var deploy_sel: Unit = null
+var turn_snap: Dictionary = {}
 var pending: Dictionary = {}            # {"ability": ...} or {"item": id}
 var inspecting: Unit = null
 var busy := false
@@ -94,11 +96,14 @@ func _save_progress() -> void:
 	if f != null:
 		f.store_string(JSON.stringify(progress))
 
-func _new_progress() -> Dictionary:
+func _new_progress(difficulty: String = "normal") -> Dictionary:
 	var party: Array = []
 	for p in GameData.PARTY:
-		party.append({"name": p["name"], "job": p["job"], "level": 1, "xp": 0})
-	return {"chapter": 0, "party": party, "wins": 0}
+		party.append({"name": p["name"], "job": p["job"], "level": 1, "xp": 0, "jp": 0, "learned": []})
+	return {"chapter": 0, "party": party, "wins": 0, "difficulty": difficulty}
+
+func difficulty() -> Dictionary:
+	return GameData.DIFFICULTY.get(String(progress.get("difficulty", "normal")), GameData.DIFFICULTY["normal"])
 
 # ------------------------------------------------------------------ screens --
 func show_title() -> void:
@@ -109,10 +114,17 @@ func show_title() -> void:
 		body += "[color=%s][b]%s[/b][/color] — [color=#e8c66a]%s[/color]\n[color=#98a0c4]%s[/color]\n\n" % [
 			j["color"], p["name"], p["job"], j["blurb"]]
 	var buttons: Array = []
-	if progress.has("chapter") and int(progress.get("chapter", 0)) > 0:
-		buttons.append({"id": "continue", "label": "Continue — Chapter %d" % (int(progress["chapter"]) + 1), "accent": "primary"})
-	buttons.append({"id": "new", "label": "New Campaign", "accent": "primary" if buttons.is_empty() else ""})
+	var has := progress.has("chapter") and int(progress.get("chapter", 0)) > 0
+	if has:
+		buttons.append({"id": "continue", "label": "Continue — Chapter %d (%s)" % [int(progress["chapter"]) + 1, difficulty()["name"]], "accent": "primary"})
+	for id in ["story", "normal", "hard"]:
+		var d: Dictionary = GameData.DIFFICULTY[id]
+		buttons.append({"id": "new_" + id, "label": "New: %s" % d["name"], "accent": "primary" if (id == "normal" and not has) else ""})
 	buttons.append({"id": "help", "label": "How to Play"})
+	body += "\n[color=#98a0c4]"
+	for id in ["story", "normal", "hard"]:
+		body += "[b]%s[/b] — %s   " % [GameData.DIFFICULTY[id]["name"], GameData.DIFFICULTY[id]["blurb"]]
+	body += "[/color]"
 	hud.show_sheet("TACTICS CORE", body, buttons)
 
 func show_help(return_to: String) -> void:
@@ -149,8 +161,42 @@ func show_briefing() -> void:
 	body += "\n[color=#6fd08c]Tip: %s[/color]" % chapter["tip"]
 	hud.show_sheet(String(chapter["title"]), body, [
 		{"id": "begin", "label": "Begin Battle", "accent": "primary"},
+		{"id": "learn", "label": "Learn Abilities"},
 		{"id": "help", "label": "How to Play"},
 		{"id": "title", "label": "Main Menu"}])
+
+## Spend JP between chapters. Works on the saved party.
+func show_learn() -> void:
+	mode = "over"
+	var body := "[color=#98a0c4]JP is earned alongside XP. Anything you don't buy now is still there next time.[/color]\n\n"
+	var buttons: Array = []
+	var party: Array = progress["party"]
+	for i in party.size():
+		var p: Dictionary = party[i]
+		var job: Dictionary = GameData.job(p["job"])
+		var known: Array = (job.get("starting", job["abilities"]) as Array).duplicate()
+		for l in p.get("learned", []):
+			known.append(l)
+		var names: Array[String] = []
+		for id in known:
+			names.append(String(GameData.ability(id)["name"]))
+		body += "[color=%s][b]%s[/b][/color] [color=#e8c66a]%s Lv %d[/color] · [color=#5b8def]%d JP[/color]\n[color=#98a0c4]Knows: %s[/color]\n" % [
+			job["color"], p["name"], p["job"], int(p["level"]), int(p.get("jp", 0)), ", ".join(names)]
+		for id in job["abilities"]:
+			if known.has(id):
+				continue
+			var a: Dictionary = GameData.ability(id)
+			if not a.has("jp"):
+				continue
+			var can: bool = int(p.get("jp", 0)) >= int(a["jp"])
+			body += "   %s — %d JP%s: [color=#98a0c4]%s[/color]\n" % [a["name"], int(a["jp"]),
+				" [color=#6fd08c](affordable)[/color]" if can else "", a["desc"]]
+			if can:
+				buttons.append({"id": "buy:%d:%s" % [i, id], "label": "%s: learn %s" % [p["name"], a["name"]]})
+		body += "\n"
+	buttons.append({"id": "next", "label": "Next Chapter", "accent": "primary"})
+	buttons.append({"id": "title", "label": "Main Menu"})
+	hud.show_sheet("Learn Abilities", body, buttons)
 
 func show_pause() -> void:
 	hud.show_sheet("Paused", "", [
@@ -164,6 +210,19 @@ func show_pause() -> void:
 
 func _on_sheet(id: String) -> void:
 	audio.play("select")
+	if id.begins_with("buy:"):
+		var parts := id.split(":")
+		var p: Dictionary = progress["party"][int(parts[1])]
+		var a: Dictionary = GameData.ability(parts[2])
+		if int(p.get("jp", 0)) >= int(a["jp"]):
+			p["jp"] = int(p["jp"]) - int(a["jp"])
+			var learned: Array = p.get("learned", [])
+			learned.append(parts[2])
+			p["learned"] = learned
+			_save_progress()
+			audio.play("levelup")
+		show_learn()
+		return
 	match id:
 		"help":
 			show_help(mode)
@@ -174,10 +233,14 @@ func _on_sheet(id: String) -> void:
 				show_briefing()
 			else:
 				show_title()
-		"new":
-			progress = _new_progress()
+		"new_story", "new_normal", "new_hard":
+			progress = _new_progress(id.trim_prefix("new_"))
 			_save_progress()
 			show_briefing()
+		"learn":
+			show_learn()
+		"start_battle":
+			begin_battle()
 		"continue":
 			show_briefing()
 		"begin":
@@ -209,20 +272,92 @@ func start_battle(chapter: Dictionary) -> void:
 	pending = {}
 	busy = false
 	inspecting = null
-	battle = Battle.new(chapter, progress["party"])
+	battle = Battle.new(chapter, progress["party"], {"levelOffset": int(difficulty()["levelOffset"])})
 	board.setup(battle)
+	turn_snap = {}
+	deploy_sel = null
 	_apply_sky(battle.grid.weather)
 	hud.clear_log()
 	hud.set_inspect(null)
 	hud.set_preview("")
 	hud.set_hint("")
-	hud.set_chapter(String(chapter["title"]).replace("Chapter ", "Ch."),
-		"Defeat the Necromancer" if chapter.get("objective", "rout") == "boss" else "Defeat all enemies")
+	var objective := "Defeat all enemies"
+	match String(chapter.get("objective", "rout")):
+		"boss": objective = "Slay the boss"
+		"protect": objective = "Keep %s alive" % chapter["npc"][0]
+	hud.set_chapter(String(chapter["title"]).replace("Chapter ", "Ch."), objective)
 	hud.log_line("[color=#e8c66a]%s[/color]" % chapter["title"])
 	fit_camera()
 	if chapter.get("boss", false):
 		audio.play("boss")
+	enter_deploy()
+
+## Before turn one the player may shuffle the party around the deploy zone.
+func enter_deploy() -> void:
+	mode = "deploy"
+	deploy_sel = null
+	clear_overlays()
+	for t in battle.deploy_zone():
+		board.overlay_move[t] = true
+	hud.set_hint("Deployment: tap a unit, then a highlighted tile. Start when ready.")
+	refresh()
+	if autoplay:
+		begin_battle()
+
+func deploy_click(tile: Vector2i, clicked: Unit) -> void:
+	if deploy_sel != null:
+		if battle.place_unit(deploy_sel, tile):
+			audio.play("move")
+			deploy_sel = null
+		elif clicked != null and clicked.team == "P" and not clicked.npc:
+			deploy_sel = clicked
+		else:
+			audio.play("cancel")
+			deploy_sel = null
+	elif clicked != null and clicked.team == "P" and not clicked.npc:
+		deploy_sel = clicked
+		audio.play("select")
+	hud.set_inspect(clicked)
+	hud.set_hint("Moving %s: tap a highlighted tile (or another unit to swap)." % deploy_sel.unit_name if deploy_sel != null
+		else "Deployment: tap a unit, then a highlighted tile. Start when ready.")
+	refresh()
+
+func begin_battle() -> void:
+	if mode != "deploy":
+		return
+	deploy_sel = null
+	clear_overlays()
+	mode = "idle"
 	advance()
+
+## Story mode: put the whole turn back the way it was.
+func rewind_turn() -> void:
+	if busy or turn_snap.is_empty() or battle == null or mode == "enemy":
+		return
+	battle.restore(turn_snap)
+	for u in battle.units:
+		board.snap(u)
+	mode = "idle"
+	pending = {}
+	clear_overlays()
+	audio.play("cancel")
+	hud.log_line("[color=#e8c66a]Turn rewound.[/color]")
+	battle.drain()
+	sync_threat()
+	refresh()
+
+## Tiles a charging enemy spell will hit are shown in orange.
+func sync_threat() -> void:
+	board.overlay_threat.clear()
+	board.casters.clear()
+	for p in battle.pending:
+		var cid := int(p["casterId"])
+		if cid >= battle.units.size():
+			continue
+		var caster: Unit = battle.units[cid]
+		board.casters[caster.id] = true
+		for t in battle.grid.footprint(caster, GameData.ability(String(p["abilityId"])), Vector2i(int(p["tx"]), int(p["ty"]))):
+			board.overlay_threat[t] = true
 
 func advance() -> void:
 	if battle == null:
@@ -241,8 +376,10 @@ func advance() -> void:
 	inspecting = u
 	if not fits_board:
 		focus_on(u.pos)
-	if u.team == "P":
+	sync_threat()
+	if u.team == "P" and not u.npc:
 		mode = "idle"
+		turn_snap = battle.snapshot() if bool(difficulty()["undoTurn"]) else {}
 		audio.play("turn")
 		hud.log_line("[color=#9dc0ff]%s[/color]'s turn." % u.unit_name)
 		refresh()
@@ -287,16 +424,20 @@ func finish() -> void:
 	var chapter := battle.chapter
 	var levelups: Array[String] = []
 	if win:
-		var share: int = int(chapter["xp"]) / maxi(1, battle.living("P").size())
+		var fighters := 0
+		for u in battle.living("P"):
+			if not u.npc:
+				fighters += 1
+		var share: int = int(chapter["xp"]) / maxi(1, fighters)
 		var party: Array = []
 		for u in battle.units:
-			if u.team != "P":
+			if u.team != "P" or u.npc:
 				continue
 			var before := u.level
 			u.gain_xp(share if u.alive() else int(share * 0.4))
 			if u.level > before:
 				levelups.append("%s -> Lv %d" % [u.unit_name, u.level])
-			party.append({"name": u.unit_name, "job": u.job, "level": u.level, "xp": u.xp})
+			party.append({"name": u.unit_name, "job": u.job, "level": u.level, "xp": u.xp, "jp": u.jp, "learned": u.learned.duplicate()})
 		progress["party"] = party
 		progress["chapter"] = mini(GameData.CAMPAIGN.size(), GameData.CAMPAIGN.find(chapter) + 1)
 		progress["wins"] = int(progress.get("wins", 0)) + 1
@@ -313,7 +454,7 @@ func finish() -> void:
 	if not levelups.is_empty():
 		body += "[color=#6fd08c]%s[/color]\n\n" % " · ".join(levelups)
 	for u in battle.units:
-		if u.team != "P":
+		if u.team != "P" or u.npc:
 			continue
 		var state := "%d/%d HP" % [u.hp, u.max_hp] if u.alive() else "[color=#e05b5b]fallen[/color]"
 		body += "[color=%s]%s[/color] — %s Lv %d · %s · %d/%d XP\n" % [
@@ -323,7 +464,8 @@ func finish() -> void:
 	if done:
 		buttons.append({"id": "title", "label": "Main Menu", "accent": "primary"})
 	elif win:
-		buttons.append({"id": "next", "label": "Next Chapter", "accent": "primary"})
+		buttons.append({"id": "learn", "label": "Learn Abilities", "accent": "primary"})
+		buttons.append({"id": "next", "label": "Next Chapter"})
 		buttons.append({"id": "title", "label": "Main Menu"})
 	else:
 		buttons.append({"id": "retry", "label": "Retry Battle", "accent": "primary"})
@@ -399,12 +541,40 @@ func _visualise(e: Dictionary) -> float:
 		"cast":
 			var ab: Dictionary = e["ability"]
 			var kind := String(ab.get("type", "phys"))
-			if kind in ["mag", "heal", "buff", "revive", "drain"]:
-				board.burst(e["target"], Color("#8ce8a8") if kind == "heal" else Color("#c9a6ff"), 20, 1.3)
+			var magical := kind in ["mag", "heal", "buff", "revive", "drain"]
+			var target: Vector2i = e["target"]
+			var dist := Iso.manhattan(e["unit"].pos, target)
+			if magical:
+				board.burst(target, Color("#8ce8a8") if kind == "heal" else Color("#c9a6ff"), 20, 1.3)
 				audio.play("magic")
+			# A melee swing lunges; anything thrown or shot arcs across the board.
+			if dist == 1 and not magical:
+				board.lunge(e["unit"], target)
+			elif dist > 1 and kind != "buff" and kind != "revive" and not ab.has("shape"):
+				board.projectile(e["unit"], target, Color("#c9a6ff") if magical else Color("#ffe9a8"))
 			hud.log_line("[color=%s]%s[/color] uses [b]%s[/b]." % [
 				"#9dc0ff" if e["unit"].team == "P" else "#ffa8a8", e["unit"].unit_name, ab["name"]])
-			return 0.2 if int(ab.get("mp", 0)) > 0 else 0.09
+			if dist > 1 and not ab.has("shape"):
+				return 0.33
+			return 0.2 if int(ab.get("mp", 0)) > 0 else 0.14
+		"charge":
+			for tile in e["tiles"]:
+				board.burst(tile, Color("#ff9d5c"), 4, 0.6)
+			hud.log_line("[color=%s]%s[/color] begins casting [b]%s[/b]..." % [
+				"#9dc0ff" if e["unit"].team == "P" else "#ffa8a8", e["unit"].unit_name, e["ability"]["name"]])
+			sync_threat()
+			return 0.22
+		"land":
+			for tile in e["tiles"]:
+				board.burst(tile, Color("#ffb066"), 14, 1.4)
+			audio.play("magic")
+			hud.log_line("[color=#e8c66a][b]%s[/b] lands![/color]" % e["ability"]["name"])
+			sync_threat()
+			return 0.2
+		"fizzle":
+			hud.log_line("[color=#e8c66a]%s fizzles - its caster is gone.[/color]" % GameData.ability(String(e["spell"]["abilityId"]))["name"])
+			sync_threat()
+			return 0.12
 		"ko":
 			var u: Unit = e["unit"]
 			board.burst(u.pos, Color.WHITE, 26, 2.0)
@@ -449,7 +619,7 @@ func _visualise(e: Dictionary) -> float:
 
 # ------------------------------------------------------------- interaction --
 func me() -> Unit:
-	if battle != null and battle.active != null and battle.active.team == "P":
+	if battle != null and battle.active != null and battle.active.team == "P" and not battle.active.npc:
 		return battle.active
 	return null
 
@@ -565,6 +735,8 @@ func _show_preview(u: Unit, ab: Dictionary, tile: Vector2i) -> void:
 				t.unit_name, dmg, acc,
 				" · [color=#e8c66a]%s[/color]" % side if side != "front" else "",
 				" · [color=#e05b5b]KO[/color]" if dmg >= t.hp else ""]
+	if ab.has("charge"):
+		text += "[color=#e8c66a]~ charges first - lands on whoever is there then[/color]\n"
 	hud.set_preview(text)
 
 func click(tile: Vector2i) -> void:
@@ -574,6 +746,9 @@ func click(tile: Vector2i) -> void:
 	var clicked := battle.unit_at(tile.x, tile.y)
 	if clicked == null:
 		clicked = battle.ko_at(tile.x, tile.y)
+	if mode == "deploy":
+		deploy_click(tile, clicked)
+		return
 	if u == null:
 		hud.set_inspect(clicked)
 		return
@@ -646,8 +821,15 @@ func refresh() -> void:
 	order.append_array(battle.forecast(7))
 	hud.set_turn_order(order, u)
 
-	if mode in ["enemy", "over", "busy", "title"] or u == null or u.team != "P":
-		hud.set_actions([{"label": "Enemy turn...", "kind": "none", "disabled": true}] if mode == "enemy" else [])
+	if mode == "deploy":
+		hud.set_actions([{"label": "Deploy (%d tiles)" % battle.deploy_zone().size(), "kind": "none", "disabled": true},
+			{"label": "Start Battle", "kind": "start", "accent": "primary"}])
+		return
+	if mode in ["enemy", "over", "busy", "title"] or u == null or u.team != "P" or u.npc:
+		var label := "Enemy turn..."
+		if u != null and u.npc:
+			label = "%s..." % u.unit_name
+		hud.set_actions([{"label": label, "kind": "none", "disabled": true}] if mode == "enemy" else [])
 		return
 	if mode == "move" or mode == "target":
 		hud.set_actions([{"label": "Cancel", "kind": "cancel", "accent": "danger"}])
@@ -662,6 +844,8 @@ func refresh() -> void:
 		var label := String(a["name"])
 		if int(a.get("mp", 0)) > 0:
 			label += " (%d)" % int(a["mp"])
+		if a.has("charge"):
+			label += " ~"
 		if cd > 0:
 			label += " [%dt]" % cd
 		entries.append({"label": label, "kind": "ability", "payload": aid,
@@ -672,6 +856,8 @@ func refresh() -> void:
 			any_items = true
 	if any_items and not u.acted:
 		entries.append({"label": "Item", "kind": "items"})
+	if not turn_snap.is_empty() and (u.moved or u.acted):
+		entries.append({"label": "Rewind", "kind": "rewind"})
 	entries.append({"label": "Wait", "kind": "wait", "accent": "primary"})
 	hud.set_actions(entries)
 
@@ -698,6 +884,8 @@ func _on_action(kind: String, payload: Variant) -> void:
 		"items": item_menu()
 		"item": enter_target({"item": String(payload)})
 		"wait": end_turn()
+		"start": begin_battle()
+		"rewind": rewind_turn()
 		"cancel": cancel()
 		"back": refresh()
 		"inspect":
@@ -899,4 +1087,8 @@ func _handle_key(event: InputEventKey) -> void:
 			if mode == "idle":
 				item_menu()
 		KEY_F: fit_camera()
+		KEY_R: rewind_turn()
+		KEY_ENTER, KEY_KP_ENTER:
+			if mode == "deploy":
+				begin_battle()
 		KEY_H: show_help(mode)

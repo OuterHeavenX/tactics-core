@@ -38,6 +38,9 @@ var status: Dictionary = {}            # id -> turns remaining
 var cooldowns: Dictionary = {}
 var abilities: Array = []
 var passive: String = "none"
+var npc := false                       # protect-objective civilian
+var jp: int = 0
+var learned: Array = []                # ability ids bought with JP
 
 var start_pos: Vector2i = Vector2i.ZERO
 var start_facing: int = 0
@@ -50,7 +53,11 @@ func _init(p_name: String, p_job: String, p_team: String, p_pos: Vector2i, p_lev
 	pos = p_pos
 	level = maxi(1, p_level)
 	facing = 0 if p_team == "P" else 1
-	abilities = (job_def["abilities"] as Array).duplicate()
+	# Enemies know their whole kit; the party starts with a subset and learns.
+	if p_team == "P" and job_def.has("starting"):
+		abilities = (job_def["starting"] as Array).duplicate()
+	else:
+		abilities = (job_def["abilities"] as Array).duplicate()
 	passive = job_def.get("passive", "none")
 	apply_growth()
 	hp = max_hp
@@ -130,11 +137,31 @@ func usable_abilities() -> Array:
 			out.append(a)
 	return out
 
+## Abilities in the job list that are not yet known and cost JP.
+func learnable() -> Array:
+	var out: Array = []
+	for id in job_def["abilities"]:
+		if not abilities.has(id) and GameData.ABILITIES.has(id) and GameData.ABILITIES[id].has("jp"):
+			out.append(id)
+	return out
+
+func learn(id: String) -> bool:
+	if not GameData.ABILITIES.has(id):
+		return false
+	var a: Dictionary = GameData.ABILITIES[id]
+	if not a.has("jp") or abilities.has(id) or not (job_def["abilities"] as Array).has(id) or jp < int(a["jp"]):
+		return false
+	jp -= int(a["jp"])
+	abilities.append(id)
+	learned.append(id)
+	return true
+
 ## Returns the number of levels gained, so the caller can announce them.
 func gain_xp(n: int) -> int:
-	if team != "P" or n <= 0:
+	if team != "P" or n <= 0 or npc:
 		return 0
 	xp += n
+	jp += ceili(n * 0.75)               # JP tracks XP, spent on the learn screen
 	var gained := 0
 	while xp >= xp_to_next():
 		xp -= xp_to_next()

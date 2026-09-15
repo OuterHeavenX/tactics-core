@@ -26,15 +26,16 @@ func _initialize() -> void:
 	test_iso()
 	test_grid()
 	test_rules()
+	test_new_systems()
 	test_campaign_balance()
 	print("\n%d failure(s)" % failures)
 	quit(1 if failures > 0 else 0)
 
 func test_data() -> void:
 	print("Data")
-	check("maps load", GameData.MAPS.size() == 4)
-	check("jobs load", GameData.JOBS.size() == 11)
-	check("campaign loads", GameData.CAMPAIGN.size() == 4)
+	check("maps load", GameData.MAPS.size() == 7)
+	check("jobs load", GameData.JOBS.size() == 14)
+	check("campaign loads", GameData.CAMPAIGN.size() == 7)
 	var all_rect := true
 	for key in GameData.MAPS:
 		var m: Dictionary = GameData.MAPS[key]
@@ -173,12 +174,12 @@ func test_rules() -> void:
 	check("turn engine never wakes the fallen", not picked_dead)
 
 	# Summon cap keeps the Necromancer from stalling the battle forever.
-	var necro_battle := Battle.new(GameData.CAMPAIGN[3], GameData.PARTY)
+	var necro_battle := Battle.new(_chapter_on("necrohol"), GameData.PARTY)
 	var necro: Unit = null
 	for e in necro_battle.living("E"):
-		if e.passive == "boss":
+		if e.job == "Necromancer":
 			necro = e
-	check("boss present in chapter 4", necro != null)
+	check("boss present in the finale", necro != null)
 	if necro != null:
 		var summon := GameData.ability("summonBone")
 		for i in 12:
@@ -194,6 +195,114 @@ func test_rules() -> void:
 				skeletons += 1
 		# Chapter 4 already fields 4 skeletons, so the cap bounds the summoned extras.
 		check("summons are capped", skeletons <= 7, "%d skeletons after 12 attempts" % skeletons)
+
+func _chapter_on(map_id: String) -> Dictionary:
+	for c in GameData.CAMPAIGN:
+		if c["map"] == map_id:
+			return c
+	return GameData.CAMPAIGN[0]
+
+func _party(level: int) -> Array:
+	var party: Array = []
+	for p in GameData.PARTY:
+		party.append({"name": p["name"], "job": p["job"], "level": level})
+	return party
+
+func test_new_systems() -> void:
+	print("Cast-time spells, cones, rewind, learning")
+	var b := Battle.new(GameData.CAMPAIGN[0], _party(3))
+	var mage: Unit = null
+	for u in b.units:
+		if u.job == "Mage":
+			mage = u
+	var gob: Unit = b.living("E")[0]
+	mage.pos = gob.pos + Vector2i(-2, 0)
+	var hp := gob.hp
+	var ok := b.use_ability(mage, GameData.ability("fire"), gob.pos)
+	check("a charged spell does not resolve on cast", ok and gob.hp == hp and b.pending.size() == 1)
+	var has_spell := false
+	for e in b.forecast(8):
+		if e is Dictionary:
+			has_spell = true
+	check("the timeline shows the pending spell", has_spell)
+	gob.pos += Vector2i(3, 0)                            # walk out of it
+	for u in b.units:
+		u.ct = 0.0
+	var guard := 0
+	while not b.pending.is_empty() and guard < 30:
+		guard += 1
+		b.begin_turn()
+		b.end_turn(b.active)
+	check("a dodged spell lands on empty ground", gob.hp == hp and b.pending.is_empty())
+
+	var rb := Battle.new(_chapter_on("roost"), _party(8))
+	var dragon: Unit = null
+	for u in rb.living("E"):
+		if u.job == "Dragon":
+			dragon = u
+	var cone := rb.grid.cone_tiles(dragon.pos.x, dragon.pos.y, dragon.pos.x, dragon.pos.y + 1, 3)
+	check("breath cone is 1+3+3 tiles deep", cone.size() == 7)
+	check("cone never includes the caster", not cone.has(dragon.pos))
+
+	var s := Battle.new(GameData.CAMPAIGN[0], _party(1))
+	var u := s.begin_turn()
+	var snap := s.snapshot()
+	var victim: Unit = s.units[5]
+	var before := victim.hp
+	victim.hp = 1
+	var old_pos := u.pos
+	u.pos = Vector2i(9, 9)
+	u.acted = true
+	s.restore(snap)
+	check("rewind restores HP, position and flags", victim.hp == before and u.pos == old_pos and not u.acted)
+
+	var k: Unit = s.units[0]
+	k.jp = 500
+	check("learnable lists unknown JP abilities", k.learnable().has("rally") and not k.abilities.has("rally"))
+	check("learning spends JP and adds the ability", k.learn("rally") and k.jp == 350 and k.abilities.has("rally"))
+	check("cannot learn twice or without JP", not k.learn("rally") and not (s.units[1] as Unit).learn("judgment"))
+
+	# Rewinding twice in one turn must not leak the first rewind's state.
+	var snap2 := s.snapshot()
+	(s.units[5] as Unit).add_status("protect", 3)
+	s.restore(snap2)
+	(s.units[5] as Unit).add_status("protect", 3)
+	s.restore(snap2)
+	check("a second rewind still restores a clean state", not (s.units[5] as Unit).has_status("protect"))
+
+	# A charged spell that kills the last enemy must end the battle at once.
+	var last := Battle.new(GameData.CAMPAIGN[0], _party(9))
+	var foes := last.living("E")
+	var keep: Unit = foes[0]
+	for f in foes:
+		if f != keep:
+			f.hp = 0
+	var caster: Unit = null
+	for u2 in last.units:
+		if u2.job == "Mage":
+			caster = u2
+	caster.pos = keep.pos + Vector2i(-2, 0)
+	keep.hp = 1
+	last.use_ability(caster, GameData.ability("fire"), keep.pos)
+	for u2 in last.units:
+		u2.ct = 0.0
+	var next := last.begin_turn()
+	check("a spell that lands the killing blow ends the battle immediately", next == null and last.over == "victory")
+	var zone := s.deploy_zone()
+	var walkable := true
+	for t in zone:
+		if not s.grid.walkable(t.x, t.y):
+			walkable = false
+	check("deploy zone is a walkable superset of the slots", zone.size() >= GameData.PARTY.size() and walkable)
+
+	var pb := Battle.new(_chapter_on("grove"), _party(5))
+	var npc: Unit = null
+	for x in pb.units:
+		if x.npc:
+			npc = x
+	check("protect chapter fields an npc on the player side", npc != null and npc.team == "P" and npc.abilities.is_empty())
+	npc.hp = 0
+	check("losing the npc loses the battle", pb.check_end() and pb.over == "defeat")
 
 func _unique_positions(battle: Battle) -> bool:
 	var seen := {}
@@ -217,10 +326,7 @@ func test_campaign_balance() -> void:
 		var stalls := 0
 		var total_turns := 0
 		for run in 8:
-			var party: Array = []
-			for p in GameData.PARTY:
-				party.append({"name": p["name"], "job": p["job"], "level": 1 + ci * 2})
-			var b := Battle.new(chapter, party)
+			var b := Battle.new(chapter, _party(int(chapter.get("enemyLevel", 1 + ci * 2))))
 			var guard := 0
 			while not b.check_end() and guard < 400:
 				guard += 1

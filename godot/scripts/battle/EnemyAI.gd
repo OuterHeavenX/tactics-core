@@ -26,7 +26,23 @@ const W := {
 	"approach": -1.6,
 	"backstab": 8.0,
 	"self_preserve": 30.0,
+	"npc_kill": 2.2,        # multiplier on value against a protect-objective civilian
+	"charged": 0.8,         # a spell that lands later may miss a target that walks away
+	"guard": 3.0,           # per tile an escort strays from the civilian it protects
 }
+
+## Damage a unit would eat from every enemy spell already charging over a tile.
+static func incoming(battle: Battle, unit: Unit, tile: Vector2i) -> float:
+	var dmg := 0.0
+	for p in battle.pending:
+		var cid := int(p["casterId"])
+		var caster: Unit = battle.units[cid] if cid < battle.units.size() else null
+		if caster == null or not caster.alive() or caster.team == unit.team:
+			continue
+		var ability := GameData.ability(String(p["abilityId"]))
+		if battle.grid.footprint(caster, ability, Vector2i(int(p["tx"]), int(p["ty"]))).has(tile):
+			dmg += battle.estimate_damage(caster, unit, ability)
+	return dmg
 
 ## Long battles get progressively pushier so two cautious sides cannot stare at
 ## each other across a river forever.
@@ -57,9 +73,18 @@ static func tile_score(battle: Battle, unit: Unit, tile: Vector2i, nearest: Unit
 	s += (g.eva_at(tile.x, tile.y) + g.def_at(tile.x, tile.y) * 4) * W["cover"]
 	if g.hazard_at(tile.x, tile.y) > 0:
 		s += W["hazard"]
-	s += exposure(battle, tile, unit) * (W["exposure"] / aggro)
+	s -= incoming(battle, unit, tile) * 1.1          # step out of charging spells
 	var reach := approach_cost(battle, field, tile, nearest)
+	if unit.npc:
+		# Civilians only want to be far away and out of reach.
+		return s - exposure(battle, tile, unit) * 6.0 + minf(reach, 12.0) * 1.5
+	s += exposure(battle, tile, unit) * (W["exposure"] / aggro)
 	s += reach * W["approach"] * aggro
+	# Escorts stay close enough to body-block for the civilian.
+	for v in battle.units:
+		if v.npc and v.alive() and v.team == unit.team:
+			s -= maxf(0.0, Iso.manhattan(tile, v.pos) - 1) * W["guard"]
+			break
 	# Hurt units want distance; healthy ones want to be in your face.
 	if float(unit.hp) / unit.max_hp < 0.3:
 		s -= reach * W["approach"] * 1.8 / aggro
@@ -114,6 +139,10 @@ static func action_score(battle: Battle, unit: Unit, from: Vector2i, ability: Di
 						v += W["status"] * (float(ability["status"]["chance"]) / 100.0)
 					if Iso.relative_side(tgt.pos, tgt.facing, unit.pos) == "back":
 						v += W["backstab"]
+					if tgt.npc and not friendly:
+						v *= W["npc_kill"]                # the objective is standing right there
+					if ability.has("charge"):
+						v *= W["charged"]
 					s += v * W["ally_hit"] if friendly else v
 			# Spend MP on the cheapest thing that does the job.
 			s -= int(ability.get("mp", 0)) * 0.35

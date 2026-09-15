@@ -48,6 +48,13 @@ for (const ch of TC.CAMPAIGN) {
     claim(x, y, `deploy ${i}`);
   });
   if (ch.deploy.length < TC.PARTY.length) bad(`${ch.id}: ${ch.deploy.length} deploy slots for ${TC.PARTY.length} party members`);
+  if (ch.npc) {
+    const [nm, job, x, y] = ch.npc;
+    if (!TC.JOBS[job]) bad(`${ch.id}: unknown npc job ${job}`);
+    if (!walkable(m, x, y)) bad(`${ch.id}: npc ${nm} spawns on non-walkable ${x},${y}`);
+    claim(x, y, nm);
+  }
+  if (ch.objective === "protect" && !ch.npc) bad(`${ch.id}: protect objective needs an npc`);
   for (const [nm, job, x, y] of ch.enemies) {
     if (!TC.JOBS[job]) bad(`${ch.id}: unknown job ${job}`);
     if (!walkable(m, x, y)) bad(`${ch.id}: ${nm} spawns on non-walkable ${x},${y}`);

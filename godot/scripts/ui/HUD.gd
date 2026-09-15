@@ -268,6 +268,16 @@ func set_turn_order(units: Array, active: Unit) -> void:
 		c.queue_free()
 	var limit := 4 if get_viewport().get_visible_rect().size.x < 520 else (5 if compact else 7)
 	for i in mini(limit, units.size()):
+		if units[i] is Dictionary:
+			# A charged spell about to land.
+			var sp: Dictionary = units[i]["spell"]
+			var sb := Button.new()
+			sb.text = "*"
+			sb.custom_minimum_size = Vector2(26 if compact else 32, 26 if compact else 30)
+			sb.tooltip_text = "%s is charging" % GameData.ability(String(sp["abilityId"]))["name"]
+			sb.add_theme_color_override("font_color", Color("#ff9d5c"))
+			strip.add_child(sb)
+			continue
 		var u: Unit = units[i]
 		var b := Button.new()
 		b.text = BoardView.JOB_LETTER.get(u.job, "?")
@@ -290,8 +300,8 @@ func unit_block(u: Unit, brief: bool) -> String:
 	out += "HP %d/%d %s\n" % [u.hp, u.max_hp, bar.call(hp_pct, "#6fd08c" if hp_pct > 0.35 else "#e05b5b")]
 	if u.max_mp > 0:
 		out += "MP %d/%d %s\n" % [u.mp, u.max_mp, bar.call(float(u.mp) / u.max_mp, "#7aa5ff")]
-	if u.team == "P" and not brief:
-		out += "[color=#98a0c4]XP %d/%d[/color]\n" % [u.xp, u.xp_to_next()]
+	if u.team == "P" and not brief and not u.npc:
+		out += "[color=#98a0c4]XP %d/%d · %d JP[/color]\n" % [u.xp, u.xp_to_next(), u.jp]
 	out += "[color=#98a0c4]ATK[/color] %d  [color=#98a0c4]DEF[/color] %d  [color=#98a0c4]MAG[/color] %d\n" % [
 		u.stat("atk"), u.stat("def"), u.stat("mag")]
 	out += "[color=#98a0c4]RES[/color] %d  [color=#98a0c4]SPD[/color] %d  [color=#98a0c4]MOV[/color] %d  [color=#98a0c4]JMP[/color] %d\n" % [
