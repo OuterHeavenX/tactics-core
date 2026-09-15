@@ -1,0 +1,18 @@
+{
+  "name": "tactics-core",
+  "version": "2.0.0",
+  "description": "Isometric 2.5D turn-based tactics — a zero-build HTML5 game plus a Godot 4 reconstruction sharing one set of rules.",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "validate": "node tools/validate-data.js",
+    "test": "node tools/validate-data.js && node tools/gen-godot-data.js --check && node tools/test-engine.js",
+    "test:engine": "node tools/test-engine.js",
+    "test:browser": "node tools/playtest.js",
+    "gen:godot": "node tools/gen-godot-data.js && node tools/gen-parity-fixture.js",
+    "serve": "node tools/serve.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.1"
+  }
+}

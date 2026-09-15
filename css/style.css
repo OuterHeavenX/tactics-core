@@ -1,0 +1,200 @@
+/* ==========================================================================
+   TACTICS CORE — UI SKIN
+   Full-viewport canvas with floating HUD panels. Everything reflows to a
+   single column under 860px so the whole thing is usable one-handed.
+   ========================================================================== */
+:root{
+  --bg:#07080f; --panel:rgba(20,23,38,.92); --panel2:rgba(31,35,56,.92);
+  --line:rgba(120,132,190,.28); --gold:#e8c66a; --blue:#5b8def; --red:#e05b5b;
+  --green:#6fd08c; --purple:#b48ef0; --text:#e9ebf4; --dim:#98a0c4;
+  --radius:12px; --shadow:0 12px 40px rgba(0,0,0,.55);
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;}
+body{
+  background:var(--bg); color:var(--text); overscroll-behavior:none;
+  font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",sans-serif;
+  font-size:14px; line-height:1.45;
+}
+#app{position:fixed; inset:0;}
+canvas#cv{position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:none; cursor:crosshair;}
+
+#hud{position:absolute; inset:0; pointer-events:none;}
+#hud > *{pointer-events:auto;}
+.panel{
+  background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+  box-shadow:var(--shadow); backdrop-filter:blur(8px); padding:10px 12px;
+}
+.h2{font-size:10px; letter-spacing:2.2px; text-transform:uppercase; color:var(--dim); margin-bottom:6px;}
+
+/* ---------------------------------------------------------------- topbar */
+#topbar{
+  position:absolute; top:0; left:0; right:0; display:flex; gap:10px; align-items:flex-start;
+  padding:10px 12px; justify-content:space-between; pointer-events:none;
+}
+#topbar > *{pointer-events:auto;}
+#chapter{max-width:min(34vw,280px);}
+#chapter .title{font-size:13px; font-weight:600; letter-spacing:1px; color:var(--gold);}
+#chapter .obj{font-size:11px; color:var(--dim);}
+
+#timeline{display:flex; gap:5px; align-items:center; padding:7px 9px; overflow:hidden;}
+#timeline .slot{
+  display:flex; flex-direction:column; align-items:center; gap:2px; min-width:34px;
+  padding:3px 4px; border-radius:8px; background:rgba(255,255,255,.04); border:1px solid transparent;
+}
+#timeline .slot.now{border-color:var(--gold); background:rgba(232,198,106,.14);}
+#timeline .slot .pip{width:22px; height:22px; border-radius:50%; display:grid; place-items:center; font-size:12px;}
+#timeline .slot .nm{font-size:8.5px; color:var(--dim); max-width:44px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+
+#tools{display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end; max-width:220px;}
+.iconbtn{
+  width:34px; height:34px; border-radius:9px; border:1px solid var(--line);
+  background:var(--panel2); color:var(--text); font-size:15px; cursor:pointer;
+  display:grid; place-items:center; transition:background .14s, transform .08s;
+}
+.iconbtn:hover{background:#2b3050;} .iconbtn:active{transform:scale(.93);}
+.iconbtn.off{opacity:.4;}
+
+/* ------------------------------------------------------------ unit cards */
+#unitcard{position:absolute; left:12px; bottom:calc(12px + var(--safe-b)); width:236px;}
+#inspect{position:absolute; right:12px; top:86px; width:210px; display:none;}
+.uname{font-size:15px; font-weight:600; display:flex; align-items:center; gap:6px;}
+.ujob{font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--gold); margin-bottom:6px;}
+.bar{height:7px; background:#0a0c14; border-radius:4px; overflow:hidden; margin:3px 0 7px;}
+.bar > i{display:block; height:100%; border-radius:4px; transition:width .25s;}
+.bar.hp > i{background:linear-gradient(90deg,#3fae62,#7fe0a0);}
+.bar.mp > i{background:linear-gradient(90deg,#3a63c9,#7aa5ff);}
+.bar.xp > i{background:linear-gradient(90deg,#8a6ad0,#c7a6ff);}
+.srow{display:flex; justify-content:space-between; font-size:11.5px; color:var(--dim);}
+.srow b{color:var(--text); font-weight:600;}
+.grid4{display:grid; grid-template-columns:1fr 1fr; gap:2px 10px; font-size:11.5px; color:var(--dim); margin-top:4px;}
+.chips{display:flex; gap:4px; flex-wrap:wrap; margin-top:6px;}
+.chip{font-size:10px; padding:1px 6px; border-radius:20px; border:1px solid var(--line); background:rgba(255,255,255,.05);}
+
+/* ----------------------------------------------------------- action bar */
+#actionbar{
+  position:absolute; left:50%; transform:translateX(-50%); bottom:calc(12px + var(--safe-b));
+  display:flex; gap:8px; flex-wrap:wrap; justify-content:center; max-width:min(660px,92vw);
+}
+.abtn{
+  background:var(--panel2); color:var(--text); border:1px solid var(--line);
+  padding:9px 15px; border-radius:10px; font-size:13px; letter-spacing:.6px; cursor:pointer;
+  box-shadow:var(--shadow); display:flex; align-items:center; gap:7px; transition:background .14s, transform .08s;
+  min-height:42px;
+}
+.abtn:hover:not(:disabled){background:#333a60;}
+.abtn:active:not(:disabled){transform:scale(.96);}
+.abtn:disabled{opacity:.35; cursor:not-allowed;}
+.abtn.primary{border-color:var(--gold); color:var(--gold);}
+.abtn.danger{border-color:var(--red); color:#ffb3b3;}
+.abtn .cost{font-size:10.5px; color:var(--blue);}
+.abtn .key{font-size:9px; color:var(--dim); border:1px solid var(--line); border-radius:4px; padding:0 4px;}
+
+/* ------------------------------------------------------------- preview */
+#preview{
+  position:absolute; left:50%; transform:translateX(-50%); bottom:calc(66px + var(--safe-b));
+  display:none; min-width:220px; text-align:center;
+}
+#preview .big{font-size:20px; font-weight:700;}
+#preview .sub{font-size:11px; color:var(--dim);}
+#preview .ko{color:var(--red); font-weight:700; letter-spacing:1px;}
+
+/* ----------------------------------------------------------------- log */
+#logbox{
+  position:absolute; right:12px; bottom:calc(12px + var(--safe-b)); width:250px; max-height:170px;
+  overflow-y:auto; font-size:11.5px; font-family:ui-monospace,Consolas,monospace; color:var(--dim);
+}
+#logbox div{margin-bottom:2px;}
+#logbox .p{color:#9dc0ff;} #logbox .e{color:#ffa8a8;} #logbox .s{color:var(--gold);} #logbox .g{color:var(--green);}
+
+#hint{
+  position:absolute; left:50%; transform:translateX(-50%); top:64px;
+  font-size:12px; color:var(--dim); background:rgba(10,12,22,.8); padding:5px 12px;
+  border-radius:20px; border:1px solid var(--line); white-space:nowrap; pointer-events:none;
+}
+
+/* --------------------------------------------------------------- modal */
+#modal{
+  position:absolute; inset:0; display:none; place-items:center; z-index:20;
+  background:radial-gradient(900px 600px at 50% 40%,rgba(20,24,45,.9),rgba(4,5,10,.96));
+  padding:20px; overflow-y:auto; pointer-events:auto;
+}
+#modal.on{display:grid;}
+.sheet{
+  width:min(640px,94vw); background:var(--panel); border:1px solid var(--line);
+  border-radius:16px; padding:22px 24px; box-shadow:var(--shadow); text-align:center;
+}
+.sheet h1{
+  font-size:26px; letter-spacing:5px; text-transform:uppercase; margin-bottom:4px;
+  background:linear-gradient(90deg,var(--gold),#fff,var(--gold));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.sheet h2{font-size:17px; letter-spacing:2px; color:var(--gold); margin:2px 0 10px;}
+.sheet p{color:var(--dim); font-size:13px; margin-bottom:10px;}
+.sheet .tip{font-size:12px; color:var(--green); background:rgba(111,208,140,.08);
+  border:1px solid rgba(111,208,140,.25); border-radius:8px; padding:8px 12px; margin:10px 0;}
+.sheet .row{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px;}
+.roster{display:grid; grid-template-columns:repeat(auto-fit,minmax(108px,1fr)); gap:8px; margin:12px 0; text-align:left;}
+.roster .r{background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:8px 10px;}
+.roster .r .n{font-size:12px; font-weight:600;}
+.roster .r .j{font-size:10px; color:var(--gold); text-transform:uppercase; letter-spacing:1px;}
+.roster .r .l{font-size:10.5px; color:var(--dim);}
+.helpgrid{text-align:left; display:grid; gap:7px; font-size:12.5px; color:var(--dim); margin:10px 0;}
+.helpgrid b{color:var(--text);}
+kbd{background:#2a2f4d; border:1px solid var(--line); border-radius:4px; padding:0 5px; font-size:10.5px; color:var(--text);}
+
+/* -------------------------------------------------------------- mobile */
+/* Under 860px the board owns the middle of the screen: the HUD retreats to
+   the corners, the toolbar drops to three buttons (the rest live in the pause
+   sheet) and the action bar gets the full bottom edge. */
+@media (max-width:860px){
+  #topbar{padding:8px; gap:6px;}
+  #chapter{max-width:132px; padding:7px 9px;}
+  #chapter .title{font-size:11.5px;}
+  #chapter .obj{font-size:10px;}
+  #timeline{padding:5px 6px; gap:3px; flex:1; min-width:0; justify-content:center;}
+  #timeline .slot{min-width:26px; padding:2px;}
+  #timeline .slot .pip{width:19px; height:19px; font-size:10px;}
+  #timeline .slot .nm{display:none;}
+  #tools{max-width:none; flex-wrap:nowrap;}
+  #btnZoomIn,#btnZoomOut,#btnSound,#btnMusic,#btnHelp{display:none;}
+  /* Hint and preview share the strip just above the action bar. */
+  #hint{top:auto; bottom:calc(100px + var(--safe-b)); font-size:11px; max-width:88vw;
+        white-space:normal; text-align:center; line-height:1.35;}
+
+  /* The unit card tucks under the chapter plate so the bottom stays clear. */
+  #unitcard{left:8px; top:64px; bottom:auto; width:150px; padding:7px 9px;}
+  #unitcard .uname{font-size:12.5px;}
+  #unitcard .ujob{font-size:9px; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  #unitcard .srow{font-size:10.5px;}
+  #unitcard .grid4{font-size:10px; gap:0 8px; grid-template-columns:repeat(4,auto);}
+  #unitcard .xprow, #unitcard .bar.xp{display:none;}
+  #inspect{right:8px; top:64px; width:148px; padding:7px 9px;}
+  #inspect .grid4{font-size:10px;}
+  #logbox{display:none;}
+
+  #actionbar{bottom:calc(8px + var(--safe-b)); gap:5px; max-width:98vw; left:50%;}
+  .abtn{padding:8px 11px; font-size:12px; min-height:42px;}
+  .abtn .key{display:none;}
+  #preview{bottom:calc(100px + var(--safe-b)); min-width:0; max-width:92vw; padding:7px 10px;}
+  #timeline{max-width:none;}
+  #preview .big{font-size:15px;}
+  #preview .sub{font-size:10.5px;}
+  .sheet{padding:18px 16px;}
+  .sheet h1{font-size:21px; letter-spacing:3px;}
+}
+@media (max-width:520px){
+  #chapter .obj{display:none;}
+  #chapter{max-width:104px;}
+  #unitcard{width:134px;}
+  #unitcard .chips:last-child{display:none;}
+  #inspect{display:none !important;}
+  .roster{grid-template-columns:1fr 1fr;}
+}
+/* Short landscape phones: keep the board visible by shrinking the chrome. */
+@media (max-height:480px){
+  #unitcard{top:56px; width:132px;}
+  #timeline{display:none;}
+  .abtn{min-height:36px; padding:6px 10px;}
+}

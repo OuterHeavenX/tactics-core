@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/Game.gd" id="1_game"]
+[ext_resource type="Script" path="res://scripts/view/BoardView.gd" id="2_board"]
+[ext_resource type="Script" path="res://scripts/AudioSynth.gd" id="3_audio"]
+[ext_resource type="Script" path="res://scripts/ui/HUD.gd" id="4_hud"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_game")
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="Board" type="Node2D" parent="World"]
+script = ExtResource("2_board")
+
+[node name="Audio" type="Node" parent="."]
+script = ExtResource("3_audio")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("4_hud")

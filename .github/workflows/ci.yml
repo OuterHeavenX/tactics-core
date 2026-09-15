@@ -1,0 +1,126 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  GODOT_VERSION: 4.4.1
+
+jobs:
+  # ---------------------------------------------------------------- HTML5 --
+  engine:
+    name: Rules engine + browser playtest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Validate game data
+        run: node tools/validate-data.js
+
+      - name: Check generated Godot data is in sync
+        run: node tools/gen-godot-data.js --check
+
+      - name: Engine tests and balance sweep
+        run: node tools/test-engine.js --runs 40
+
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.49.1
+          npx playwright install --with-deps chromium
+
+      - name: Browser playtest (desktop, tablet, phone)
+        run: node tools/playtest.js
+
+  # ---------------------------------------------------------------- Godot --
+  godot:
+    name: Godot tests + web export
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot ${{ env.GODOT_VERSION }}
+        run: |
+          set -eux
+          BASE="https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable"
+          curl -fsSL -o godot.zip "$BASE/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          curl -fsSL -o templates.tpz "$BASE/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          unzip -q godot.zip
+          mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
+          chmod +x /usr/local/bin/godot
+          unzip -q templates.tpz
+          mkdir -p "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mv templates/* "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable/"
+
+      - name: Import project
+        working-directory: godot
+        run: godot --headless --path . --import
+
+      - name: Headless rules + balance tests
+        working-directory: godot
+        run: godot --headless --path . --script tests/HeadlessTest.gd
+
+      - name: Cross-engine parity against the JavaScript build
+        working-directory: godot
+        run: godot --headless --path . --script tests/ParityTest.gd
+
+      - name: Autoplay soak test
+        working-directory: godot
+        run: godot --headless --path . -- --autoplay --chapter=1 --quit-frames=9000
+
+      - name: Export web build
+        working-directory: godot
+        run: |
+          mkdir -p ../build/web
+          godot --headless --path . --export-release "Web" ../build/web/index.html
+          ls -la ../build/web
+
+      - name: Upload web build
+        uses: actions/upload-artifact@v4
+        with:
+          name: godot-web
+          path: build/web
+          retention-days: 14
+
+  # ----------------------------------------------------------- Pages site --
+  pages:
+    name: Publish to GitHub Pages
+    needs: [engine, godot]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download the Godot web build
+        uses: actions/download-artifact@v4
+        with:
+          name: godot-web
+          path: site/godot
+
+      - name: Assemble the site
+        run: |
+          # Root of the site is the zero-build HTML5 game; /godot/ is the
+          # Godot 4 build of the same game.
+          cp index.html site/
+          cp -r css js site/
+          touch site/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4

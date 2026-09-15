@@ -1,0 +1,6046 @@
+{
+ "chapters": {
+  "ch1": {
+   "units": [
+    {
+     "name": "Ramza",
+     "job": "Knight",
+     "team": "P",
+     "x": 1,
+     "y": 4,
+     "facing": 0,
+     "level": 5,
+     "hp": 33,
+     "maxHp": 66,
+     "mp": 18,
+     "maxMp": 18,
+     "atk": 15,
+     "def": 10,
+     "mag": 5,
+     "res": 6,
+     "spd": 8,
+     "move": 3,
+     "jump": 2,
+     "ct": 0
+    },
+    {
+     "name": "Agrias",
+     "job": "HolyKnight",
+     "team": "P",
+     "x": 0,
+     "y": 5,
+     "facing": 1,
+     "level": 5,
+     "hp": 42,
+     "maxHp": 60,
+     "mp": 28,
+     "maxMp": 28,
+     "atk": 15,
+     "def": 9,
+     "mag": 10,
+     "res": 8,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 13
+    },
+    {
+     "name": "Mustadio",
+     "job": "Archer",
+     "team": "P",
+     "x": 1,
+     "y": 6,
+     "facing": 2,
+     "level": 5,
+     "hp": 40,
+     "maxHp": 44,
+     "mp": 21,
+     "maxMp": 21,
+     "atk": 14,
+     "def": 4,
+     "mag": 5,
+     "res": 4,
+     "spd": 13,
+     "move": 4,
+     "jump": 3,
+     "ct": 26
+    },
+    {
+     "name": "Rapha",
+     "job": "Mage",
+     "team": "P",
+     "x": 0,
+     "y": 3,
+     "facing": 3,
+     "level": 5,
+     "hp": 22,
+     "maxHp": 36,
+     "mp": 44,
+     "maxMp": 44,
+     "atk": 6,
+     "def": 3,
+     "mag": 19,
+     "res": 9,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 39
+    },
+    {
+     "name": "Alma",
+     "job": "Priest",
+     "team": "P",
+     "x": 1,
+     "y": 3,
+     "facing": 0,
+     "level": 5,
+     "hp": 34,
+     "maxHp": 42,
+     "mp": 40,
+     "maxMp": 40,
+     "atk": 7,
+     "def": 4,
+     "mag": 16,
+     "res": 12,
+     "spd": 10,
+     "move": 3,
+     "jump": 2,
+     "ct": 52
+    },
+    {
+     "name": "Gob A",
+     "job": "Goblin",
+     "team": "E",
+     "x": 10,
+     "y": 3,
+     "facing": 1,
+     "level": 1,
+     "hp": 14,
+     "maxHp": 28,
+     "mp": 0,
+     "maxMp": 0,
+     "atk": 8,
+     "def": 3,
+     "mag": 2,
+     "res": 2,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 65
+    },
+    {
+     "name": "Gob B",
+     "job": "Goblin",
+     "team": "E",
+     "x": 10,
+     "y": 6,
+     "facing": 2,
+     "level": 1,
+     "hp": 20,
+     "maxHp": 28,
+     "mp": 0,
+     "maxMp": 0,
+     "atk": 8,
+     "def": 3,
+     "mag": 2,
+     "res": 2,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 78
+    },
+    {
+     "name": "Gob C",
+     "job": "Goblin",
+     "team": "E",
+     "x": 11,
+     "y": 5,
+     "facing": 3,
+     "level": 1,
+     "hp": 25,
+     "maxHp": 28,
+     "mp": 0,
+     "maxMp": 0,
+     "atk": 8,
+     "def": 3,
+     "mag": 2,
+     "res": 2,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 91
+    },
+    {
+     "name": "Orc Brute",
+     "job": "Orc",
+     "team": "E",
+     "x": 10,
+     "y": 4,
+     "facing": 0,
+     "level": 1,
+     "hp": 31,
+     "maxHp": 52,
+     "mp": 0,
+     "maxMp": 0,
+     "atk": 12,
+     "def": 6,
+     "mag": 2,
+     "res": 3,
+     "spd": 6,
+     "move": 3,
+     "jump": 1,
+     "ct": 4
+    },
+    {
+     "name": "Scrapper",
+     "job": "Goblin",
+     "team": "E",
+     "x": 11,
+     "y": 2,
+     "facing": 1,
+     "level": 1,
+     "hp": 22,
+     "maxHp": 28,
+     "mp": 0,
+     "maxMp": 0,
+     "atk": 8,
+     "def": 3,
+     "mag": 2,
+     "res": 2,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 17
+    }
+   ],
+   "combat": [
+    {
+     "att": "Ramza",
+     "def": "Gob A",
+     "ability": "attack",
+     "acc": 84,
+     "dmg": 23,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Gob A",
+     "ability": "shieldBash",
+     "acc": 84,
+     "dmg": 18,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Gob A",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 23,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Gob B",
+     "ability": "attack",
+     "acc": 94,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Gob B",
+     "ability": "shieldBash",
+     "acc": 94,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Gob B",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Gob C",
+     "ability": "attack",
+     "acc": 94,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Gob C",
+     "ability": "shieldBash",
+     "acc": 94,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Gob C",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Orc Brute",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 26,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Orc Brute",
+     "ability": "shieldBash",
+     "acc": 99,
+     "dmg": 19,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Orc Brute",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 26,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Scrapper",
+     "ability": "attack",
+     "acc": 84,
+     "dmg": 23,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Scrapper",
+     "ability": "shieldBash",
+     "acc": 84,
+     "dmg": 18,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Scrapper",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 23,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Gob A",
+     "ability": "attack",
+     "acc": 84,
+     "dmg": 23,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Gob A",
+     "ability": "stasisSword",
+     "acc": 84,
+     "dmg": 32,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Gob A",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 23,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Gob B",
+     "ability": "attack",
+     "acc": 94,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Gob B",
+     "ability": "stasisSword",
+     "acc": 94,
+     "dmg": 40,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Gob B",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Gob C",
+     "ability": "attack",
+     "acc": 94,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Gob C",
+     "ability": "stasisSword",
+     "acc": 94,
+     "dmg": 40,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Gob C",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Orc Brute",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 26,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Orc Brute",
+     "ability": "stasisSword",
+     "acc": 99,
+     "dmg": 37,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Orc Brute",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 26,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Scrapper",
+     "ability": "attack",
+     "acc": 84,
+     "dmg": 23,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Scrapper",
+     "ability": "stasisSword",
+     "acc": 84,
+     "dmg": 32,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Scrapper",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 23,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Gob A",
+     "ability": "shoot",
+     "acc": 84,
+     "dmg": 21,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Gob A",
+     "ability": "powerShot",
+     "acc": 84,
+     "dmg": 35,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Gob A",
+     "ability": "arrowRain",
+     "acc": 84,
+     "dmg": 18,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Gob B",
+     "ability": "shoot",
+     "acc": 94,
+     "dmg": 26,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Gob B",
+     "ability": "powerShot",
+     "acc": 94,
+     "dmg": 44,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Gob B",
+     "ability": "arrowRain",
+     "acc": 94,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Gob C",
+     "ability": "shoot",
+     "acc": 94,
+     "dmg": 26,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Gob C",
+     "ability": "powerShot",
+     "acc": 94,
+     "dmg": 44,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Gob C",
+     "ability": "arrowRain",
+     "acc": 94,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Orc Brute",
+     "ability": "shoot",
+     "acc": 99,
+     "dmg": 23,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Orc Brute",
+     "ability": "powerShot",
+     "acc": 99,
+     "dmg": 42,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Orc Brute",
+     "ability": "arrowRain",
+     "acc": 99,
+     "dmg": 19,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Scrapper",
+     "ability": "shoot",
+     "acc": 84,
+     "dmg": 21,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Scrapper",
+     "ability": "powerShot",
+     "acc": 84,
+     "dmg": 35,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Scrapper",
+     "ability": "arrowRain",
+     "acc": 84,
+     "dmg": 18,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob A",
+     "ability": "zap",
+     "acc": 89,
+     "dmg": 24,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob A",
+     "ability": "fire",
+     "acc": 89,
+     "dmg": 37,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob A",
+     "ability": "bolt",
+     "acc": 89,
+     "dmg": 49,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob A",
+     "ability": "frost",
+     "acc": 89,
+     "dmg": 27,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob B",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 30,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob B",
+     "ability": "fire",
+     "acc": 99,
+     "dmg": 46,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob B",
+     "ability": "bolt",
+     "acc": 99,
+     "dmg": 61,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob B",
+     "ability": "frost",
+     "acc": 99,
+     "dmg": 33,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob C",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 30,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob C",
+     "ability": "fire",
+     "acc": 99,
+     "dmg": 46,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob C",
+     "ability": "bolt",
+     "acc": 99,
+     "dmg": 61,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Gob C",
+     "ability": "frost",
+     "acc": 99,
+     "dmg": 33,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Orc Brute",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 29,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Orc Brute",
+     "ability": "fire",
+     "acc": 99,
+     "dmg": 46,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Orc Brute",
+     "ability": "bolt",
+     "acc": 99,
+     "dmg": 62,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Orc Brute",
+     "ability": "frost",
+     "acc": 99,
+     "dmg": 33,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Scrapper",
+     "ability": "zap",
+     "acc": 89,
+     "dmg": 24,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Scrapper",
+     "ability": "fire",
+     "acc": 89,
+     "dmg": 37,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Scrapper",
+     "ability": "bolt",
+     "acc": 89,
+     "dmg": 49,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Scrapper",
+     "ability": "frost",
+     "acc": 89,
+     "dmg": 27,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob A",
+     "ability": "attack",
+     "acc": 84,
+     "dmg": 9,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob A",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 15,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob A",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 9,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob A",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 9,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob A",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob B",
+     "ability": "attack",
+     "acc": 94,
+     "dmg": 12,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob B",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 19,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob B",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 12,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob B",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 12,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob B",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 2,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob C",
+     "ability": "attack",
+     "acc": 94,
+     "dmg": 12,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob C",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 19,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob C",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 12,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob C",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 12,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Gob C",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 2,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Orc Brute",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 8,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Orc Brute",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 16,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Orc Brute",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 8,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Orc Brute",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 8,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Orc Brute",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Scrapper",
+     "ability": "attack",
+     "acc": 84,
+     "dmg": 9,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Scrapper",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 15,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Scrapper",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 9,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Scrapper",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 9,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Scrapper",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob A",
+     "def": "Ramza",
+     "ability": "attack",
+     "acc": 85,
+     "dmg": 5,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob A",
+     "def": "Ramza",
+     "ability": "poisonBite",
+     "acc": 85,
+     "dmg": 1,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob A",
+     "def": "Agrias",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 8,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Gob A",
+     "def": "Agrias",
+     "ability": "poisonBite",
+     "acc": 99,
+     "dmg": 3,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Gob A",
+     "def": "Mustadio",
+     "ability": "attack",
+     "acc": 90,
+     "dmg": 13,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob A",
+     "def": "Mustadio",
+     "ability": "poisonBite",
+     "acc": 90,
+     "dmg": 8,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob A",
+     "def": "Rapha",
+     "ability": "attack",
+     "acc": 84,
+     "dmg": 11,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob A",
+     "def": "Rapha",
+     "ability": "poisonBite",
+     "acc": 84,
+     "dmg": 7,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob A",
+     "def": "Alma",
+     "ability": "attack",
+     "acc": 85,
+     "dmg": 10,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob A",
+     "def": "Alma",
+     "ability": "poisonBite",
+     "acc": 85,
+     "dmg": 7,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob B",
+     "def": "Ramza",
+     "ability": "attack",
+     "acc": 85,
+     "dmg": 5,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob B",
+     "def": "Ramza",
+     "ability": "poisonBite",
+     "acc": 85,
+     "dmg": 1,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob B",
+     "def": "Agrias",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 8,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Gob B",
+     "def": "Agrias",
+     "ability": "poisonBite",
+     "acc": 99,
+     "dmg": 3,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Gob B",
+     "def": "Mustadio",
+     "ability": "attack",
+     "acc": 90,
+     "dmg": 13,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob B",
+     "def": "Mustadio",
+     "ability": "poisonBite",
+     "acc": 90,
+     "dmg": 8,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob B",
+     "def": "Rapha",
+     "ability": "attack",
+     "acc": 84,
+     "dmg": 11,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob B",
+     "def": "Rapha",
+     "ability": "poisonBite",
+     "acc": 84,
+     "dmg": 7,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob B",
+     "def": "Alma",
+     "ability": "attack",
+     "acc": 85,
+     "dmg": 10,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob B",
+     "def": "Alma",
+     "ability": "poisonBite",
+     "acc": 85,
+     "dmg": 7,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob C",
+     "def": "Ramza",
+     "ability": "attack",
+     "acc": 85,
+     "dmg": 5,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob C",
+     "def": "Ramza",
+     "ability": "poisonBite",
+     "acc": 85,
+     "dmg": 1,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob C",
+     "def": "Agrias",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 8,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Gob C",
+     "def": "Agrias",
+     "ability": "poisonBite",
+     "acc": 99,
+     "dmg": 3,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Gob C",
+     "def": "Mustadio",
+     "ability": "attack",
+     "acc": 90,
+     "dmg": 13,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob C",
+     "def": "Mustadio",
+     "ability": "poisonBite",
+     "acc": 90,
+     "dmg": 8,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob C",
+     "def": "Rapha",
+     "ability": "attack",
+     "acc": 84,
+     "dmg": 11,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob C",
+     "def": "Rapha",
+     "ability": "poisonBite",
+     "acc": 84,
+     "dmg": 7,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Gob C",
+     "def": "Alma",
+     "ability": "attack",
+     "acc": 85,
+     "dmg": 10,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Gob C",
+     "def": "Alma",
+     "ability": "poisonBite",
+     "acc": 85,
+     "dmg": 7,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Orc Brute",
+     "def": "Ramza",
+     "ability": "attack",
+     "acc": 85,
+     "dmg": 11,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Orc Brute",
+     "def": "Ramza",
+     "ability": "cleave",
+     "acc": 85,
+     "dmg": 9,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Orc Brute",
+     "def": "Agrias",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 18,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Orc Brute",
+     "def": "Agrias",
+     "ability": "cleave",
+     "acc": 99,
+     "dmg": 15,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Orc Brute",
+     "def": "Mustadio",
+     "ability": "attack",
+     "acc": 90,
+     "dmg": 21,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Orc Brute",
+     "def": "Mustadio",
+     "ability": "cleave",
+     "acc": 90,
+     "dmg": 18,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Orc Brute",
+     "def": "Rapha",
+     "ability": "attack",
+     "acc": 84,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Orc Brute",
+     "def": "Rapha",
+     "ability": "cleave",
+     "acc": 84,
+     "dmg": 17,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Orc Brute",
+     "def": "Alma",
+     "ability": "attack",
+     "acc": 85,
+     "dmg": 17,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Orc Brute",
+     "def": "Alma",
+     "ability": "cleave",
+     "acc": 85,
+     "dmg": 15,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Scrapper",
+     "def": "Ramza",
+     "ability": "attack",
+     "acc": 85,
+     "dmg": 5,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Scrapper",
+     "def": "Ramza",
+     "ability": "poisonBite",
+     "acc": 85,
+     "dmg": 1,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Scrapper",
+     "def": "Agrias",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 8,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Scrapper",
+     "def": "Agrias",
+     "ability": "poisonBite",
+     "acc": 99,
+     "dmg": 3,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Scrapper",
+     "def": "Mustadio",
+     "ability": "attack",
+     "acc": 90,
+     "dmg": 13,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Scrapper",
+     "def": "Mustadio",
+     "ability": "poisonBite",
+     "acc": 90,
+     "dmg": 8,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Scrapper",
+     "def": "Rapha",
+     "ability": "attack",
+     "acc": 84,
+     "dmg": 11,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Scrapper",
+     "def": "Rapha",
+     "ability": "poisonBite",
+     "acc": 84,
+     "dmg": 7,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Scrapper",
+     "def": "Alma",
+     "ability": "attack",
+     "acc": 85,
+     "dmg": 10,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Scrapper",
+     "def": "Alma",
+     "ability": "poisonBite",
+     "acc": 85,
+     "dmg": 7,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    }
+   ],
+   "reach": [
+    {
+     "name": "Ramza",
+     "tiles": 16,
+     "sum": 1908
+    },
+    {
+     "name": "Agrias",
+     "tiles": 11,
+     "sum": 1344
+    },
+    {
+     "name": "Mustadio",
+     "tiles": 26,
+     "sum": 4318
+    },
+    {
+     "name": "Rapha",
+     "tiles": 12,
+     "sum": 933
+    },
+    {
+     "name": "Alma",
+     "tiles": 16,
+     "sum": 1551
+    },
+    {
+     "name": "Gob A",
+     "tiles": 15,
+     "sum": 5082
+    },
+    {
+     "name": "Gob B",
+     "tiles": 17,
+     "sum": 6796
+    },
+    {
+     "name": "Gob C",
+     "tiles": 11,
+     "sum": 4430
+    },
+    {
+     "name": "Orc Brute",
+     "tiles": 16,
+     "sum": 5707
+    },
+    {
+     "name": "Scrapper",
+     "tiles": 11,
+     "sum": 3702
+    }
+   ],
+   "field": [
+    {
+     "name": "Ramza",
+     "reachable": 113,
+     "sum": 693
+    },
+    {
+     "name": "Agrias",
+     "reachable": 113,
+     "sum": 693
+    },
+    {
+     "name": "Mustadio",
+     "reachable": 113,
+     "sum": 693
+    },
+    {
+     "name": "Rapha",
+     "reachable": 113,
+     "sum": 693
+    },
+    {
+     "name": "Alma",
+     "reachable": 113,
+     "sum": 693
+    },
+    {
+     "name": "Gob A",
+     "reachable": 113,
+     "sum": 678
+    },
+    {
+     "name": "Gob B",
+     "reachable": 113,
+     "sum": 678
+    },
+    {
+     "name": "Gob C",
+     "reachable": 113,
+     "sum": 678
+    },
+    {
+     "name": "Orc Brute",
+     "reachable": 113,
+     "sum": 678
+    },
+    {
+     "name": "Scrapper",
+     "reachable": 113,
+     "sum": 678
+    }
+   ],
+   "plans": [
+    {
+     "name": "Ramza",
+     "move": null,
+     "ability": "rally",
+     "target": "1,4",
+     "score": 62.1
+    },
+    {
+     "name": "Agrias",
+     "move": "2,4",
+     "ability": "protect",
+     "target": "0,3",
+     "score": 10.2
+    },
+    {
+     "name": "Mustadio",
+     "move": "5,6",
+     "ability": "arrowRain",
+     "target": "9,6",
+     "score": 56.4
+    },
+    {
+     "name": "Rapha",
+     "move": "2,4",
+     "ability": null,
+     "target": null,
+     "score": -3
+    },
+    {
+     "name": "Alma",
+     "move": "2,4",
+     "ability": "cureAll",
+     "target": "0,4",
+     "score": 55.9
+    },
+    {
+     "name": "Gob A",
+     "move": "8,4",
+     "ability": null,
+     "target": null,
+     "score": -1.4
+    },
+    {
+     "name": "Gob B",
+     "move": "8,5",
+     "ability": null,
+     "target": null,
+     "score": -4.5
+    },
+    {
+     "name": "Gob C",
+     "move": "8,5",
+     "ability": null,
+     "target": null,
+     "score": -4.5
+    },
+    {
+     "name": "Orc Brute",
+     "move": "8,4",
+     "ability": null,
+     "target": null,
+     "score": -1.4
+    },
+    {
+     "name": "Scrapper",
+     "move": "11,3",
+     "ability": null,
+     "target": null,
+     "score": -7.8
+    }
+   ],
+   "forecast": [
+    "Gob C",
+    "Gob B",
+    "Gob A",
+    "Alma",
+    "Mustadio",
+    "Rapha",
+    "Scrapper",
+    "Agrias"
+   ]
+  },
+  "ch3": {
+   "units": [
+    {
+     "name": "Ramza",
+     "job": "Knight",
+     "team": "P",
+     "x": 4,
+     "y": 8,
+     "facing": 0,
+     "level": 5,
+     "hp": 33,
+     "maxHp": 66,
+     "mp": 18,
+     "maxMp": 18,
+     "atk": 15,
+     "def": 10,
+     "mag": 5,
+     "res": 6,
+     "spd": 8,
+     "move": 3,
+     "jump": 2,
+     "ct": 0
+    },
+    {
+     "name": "Agrias",
+     "job": "HolyKnight",
+     "team": "P",
+     "x": 5,
+     "y": 8,
+     "facing": 1,
+     "level": 5,
+     "hp": 42,
+     "maxHp": 60,
+     "mp": 28,
+     "maxMp": 28,
+     "atk": 15,
+     "def": 9,
+     "mag": 10,
+     "res": 8,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 13
+    },
+    {
+     "name": "Mustadio",
+     "job": "Archer",
+     "team": "P",
+     "x": 6,
+     "y": 8,
+     "facing": 2,
+     "level": 5,
+     "hp": 40,
+     "maxHp": 44,
+     "mp": 21,
+     "maxMp": 21,
+     "atk": 14,
+     "def": 4,
+     "mag": 5,
+     "res": 4,
+     "spd": 13,
+     "move": 4,
+     "jump": 3,
+     "ct": 26
+    },
+    {
+     "name": "Rapha",
+     "job": "Mage",
+     "team": "P",
+     "x": 7,
+     "y": 8,
+     "facing": 3,
+     "level": 5,
+     "hp": 22,
+     "maxHp": 36,
+     "mp": 44,
+     "maxMp": 44,
+     "atk": 6,
+     "def": 3,
+     "mag": 19,
+     "res": 9,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 39
+    },
+    {
+     "name": "Alma",
+     "job": "Priest",
+     "team": "P",
+     "x": 5,
+     "y": 9,
+     "facing": 0,
+     "level": 5,
+     "hp": 34,
+     "maxHp": 42,
+     "mp": 40,
+     "maxMp": 40,
+     "atk": 7,
+     "def": 4,
+     "mag": 16,
+     "res": 12,
+     "spd": 10,
+     "move": 3,
+     "jump": 2,
+     "ct": 52
+    },
+    {
+     "name": "Warlord",
+     "job": "Orc",
+     "team": "E",
+     "x": 5,
+     "y": 1,
+     "facing": 1,
+     "level": 4,
+     "hp": 35,
+     "maxHp": 70,
+     "mp": 0,
+     "maxMp": 0,
+     "atk": 16,
+     "def": 8,
+     "mag": 2,
+     "res": 4,
+     "spd": 6,
+     "move": 3,
+     "jump": 1,
+     "ct": 65
+    },
+    {
+     "name": "Warlord II",
+     "job": "Orc",
+     "team": "E",
+     "x": 6,
+     "y": 1,
+     "facing": 2,
+     "level": 4,
+     "hp": 49,
+     "maxHp": 70,
+     "mp": 0,
+     "maxMp": 0,
+     "atk": 16,
+     "def": 8,
+     "mag": 2,
+     "res": 4,
+     "spd": 6,
+     "move": 3,
+     "jump": 1,
+     "ct": 78
+    },
+    {
+     "name": "Sniper",
+     "job": "Bandit",
+     "team": "E",
+     "x": 2,
+     "y": 3,
+     "facing": 3,
+     "level": 4,
+     "hp": 40,
+     "maxHp": 44,
+     "mp": 10,
+     "maxMp": 10,
+     "atk": 13,
+     "def": 4,
+     "mag": 4,
+     "res": 4,
+     "spd": 11,
+     "move": 4,
+     "jump": 3,
+     "ct": 91
+    },
+    {
+     "name": "Sniper II",
+     "job": "Bandit",
+     "team": "E",
+     "x": 9,
+     "y": 3,
+     "facing": 0,
+     "level": 4,
+     "hp": 26,
+     "maxHp": 44,
+     "mp": 10,
+     "maxMp": 10,
+     "atk": 13,
+     "def": 4,
+     "mag": 4,
+     "res": 4,
+     "spd": 11,
+     "move": 4,
+     "jump": 3,
+     "ct": 4
+    },
+    {
+     "name": "Wraith",
+     "job": "Shade",
+     "team": "E",
+     "x": 3,
+     "y": 4,
+     "facing": 1,
+     "level": 4,
+     "hp": 26,
+     "maxHp": 33,
+     "mp": 32,
+     "maxMp": 32,
+     "atk": 7,
+     "def": 3,
+     "mag": 16,
+     "res": 9,
+     "spd": 11,
+     "move": 4,
+     "jump": 9,
+     "ct": 17
+    },
+    {
+     "name": "Wraith II",
+     "job": "Shade",
+     "team": "E",
+     "x": 8,
+     "y": 5,
+     "facing": 2,
+     "level": 4,
+     "hp": 17,
+     "maxHp": 33,
+     "mp": 32,
+     "maxMp": 32,
+     "atk": 7,
+     "def": 3,
+     "mag": 16,
+     "res": 9,
+     "spd": 11,
+     "move": 4,
+     "jump": 9,
+     "ct": 30
+    }
+   ],
+   "combat": [
+    {
+     "att": "Ramza",
+     "def": "Warlord",
+     "ability": "attack",
+     "acc": 98,
+     "dmg": 19,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Warlord",
+     "ability": "shieldBash",
+     "acc": 98,
+     "dmg": 14,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Warlord",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 19,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Warlord II",
+     "ability": "attack",
+     "acc": 88,
+     "dmg": 16,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Warlord II",
+     "ability": "shieldBash",
+     "acc": 88,
+     "dmg": 11,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Warlord II",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 16,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Sniper",
+     "ability": "attack",
+     "acc": 88,
+     "dmg": 30,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Sniper",
+     "ability": "shieldBash",
+     "acc": 88,
+     "dmg": 22,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Sniper",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 30,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Sniper II",
+     "ability": "attack",
+     "acc": 88,
+     "dmg": 30,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Sniper II",
+     "ability": "shieldBash",
+     "acc": 88,
+     "dmg": 22,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Sniper II",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 30,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Wraith",
+     "ability": "attack",
+     "acc": 76,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Wraith",
+     "ability": "shieldBash",
+     "acc": 76,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Wraith",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Wraith II",
+     "ability": "attack",
+     "acc": 76,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Wraith II",
+     "ability": "shieldBash",
+     "acc": 76,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Wraith II",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Warlord",
+     "ability": "attack",
+     "acc": 98,
+     "dmg": 19,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Warlord",
+     "ability": "stasisSword",
+     "acc": 98,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Warlord",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 19,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Warlord II",
+     "ability": "attack",
+     "acc": 88,
+     "dmg": 16,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Warlord II",
+     "ability": "stasisSword",
+     "acc": 88,
+     "dmg": 23,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Warlord II",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 16,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Sniper",
+     "ability": "attack",
+     "acc": 88,
+     "dmg": 30,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Sniper",
+     "ability": "stasisSword",
+     "acc": 88,
+     "dmg": 44,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Sniper",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 30,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Sniper II",
+     "ability": "attack",
+     "acc": 78,
+     "dmg": 25,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Sniper II",
+     "ability": "stasisSword",
+     "acc": 78,
+     "dmg": 36,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Sniper II",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 25,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Wraith",
+     "ability": "attack",
+     "acc": 76,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Wraith",
+     "ability": "stasisSword",
+     "acc": 76,
+     "dmg": 40,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Wraith",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Wraith II",
+     "ability": "attack",
+     "acc": 76,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Wraith II",
+     "ability": "stasisSword",
+     "acc": 76,
+     "dmg": 40,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Wraith II",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Warlord",
+     "ability": "shoot",
+     "acc": 98,
+     "dmg": 18,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Warlord",
+     "ability": "powerShot",
+     "acc": 98,
+     "dmg": 33,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Warlord",
+     "ability": "arrowRain",
+     "acc": 98,
+     "dmg": 14,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Warlord II",
+     "ability": "shoot",
+     "acc": 88,
+     "dmg": 14,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Warlord II",
+     "ability": "powerShot",
+     "acc": 88,
+     "dmg": 26,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Warlord II",
+     "ability": "arrowRain",
+     "acc": 88,
+     "dmg": 11,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Sniper",
+     "ability": "shoot",
+     "acc": 88,
+     "dmg": 28,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Sniper",
+     "ability": "powerShot",
+     "acc": 88,
+     "dmg": 49,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Sniper",
+     "ability": "arrowRain",
+     "acc": 88,
+     "dmg": 22,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Sniper II",
+     "ability": "shoot",
+     "acc": 78,
+     "dmg": 23,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Sniper II",
+     "ability": "powerShot",
+     "acc": 78,
+     "dmg": 41,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Sniper II",
+     "ability": "arrowRain",
+     "acc": 78,
+     "dmg": 19,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Wraith",
+     "ability": "shoot",
+     "acc": 76,
+     "dmg": 26,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Wraith",
+     "ability": "powerShot",
+     "acc": 76,
+     "dmg": 44,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Wraith",
+     "ability": "arrowRain",
+     "acc": 76,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Wraith II",
+     "ability": "shoot",
+     "acc": 66,
+     "dmg": 21,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Wraith II",
+     "ability": "powerShot",
+     "acc": 66,
+     "dmg": 35,
+     "crit": 8,
+     "side": "front",
+     "valid": true
+    },
+    {
+     "att": "Mustadio",
+     "def": "Wraith II",
+     "ability": "arrowRain",
+     "acc": 66,
+     "dmg": 18,
+     "crit": 8,
+     "side": "front",
+     "valid": true
+    },
+    {
+     "att": "Rapha",
+     "def": "Warlord",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 23,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Warlord",
+     "ability": "fire",
+     "acc": 99,
+     "dmg": 37,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Warlord",
+     "ability": "bolt",
+     "acc": 99,
+     "dmg": 51,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Warlord",
+     "ability": "frost",
+     "acc": 99,
+     "dmg": 26,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Warlord II",
+     "ability": "zap",
+     "acc": 93,
+     "dmg": 19,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Warlord II",
+     "ability": "fire",
+     "acc": 93,
+     "dmg": 30,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Warlord II",
+     "ability": "bolt",
+     "acc": 93,
+     "dmg": 41,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Warlord II",
+     "ability": "frost",
+     "acc": 93,
+     "dmg": 21,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Sniper",
+     "ability": "zap",
+     "acc": 83,
+     "dmg": 28,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Sniper",
+     "ability": "fire",
+     "acc": 83,
+     "dmg": 44,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Sniper",
+     "ability": "bolt",
+     "acc": 83,
+     "dmg": 60,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Sniper",
+     "ability": "frost",
+     "acc": 83,
+     "dmg": 31,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Sniper II",
+     "ability": "zap",
+     "acc": 83,
+     "dmg": 28,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Sniper II",
+     "ability": "fire",
+     "acc": 83,
+     "dmg": 44,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Sniper II",
+     "ability": "bolt",
+     "acc": 83,
+     "dmg": 60,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Sniper II",
+     "ability": "frost",
+     "acc": 83,
+     "dmg": 31,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Wraith",
+     "ability": "zap",
+     "acc": 91,
+     "dmg": 26,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Wraith",
+     "ability": "fire",
+     "acc": 91,
+     "dmg": 46,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Wraith",
+     "ability": "bolt",
+     "acc": 91,
+     "dmg": 69,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Wraith",
+     "ability": "frost",
+     "acc": 91,
+     "dmg": 31,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Wraith II",
+     "ability": "zap",
+     "acc": 71,
+     "dmg": 18,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Wraith II",
+     "ability": "fire",
+     "acc": 71,
+     "dmg": 30,
+     "crit": 8,
+     "side": "front",
+     "valid": true
+    },
+    {
+     "att": "Rapha",
+     "def": "Wraith II",
+     "ability": "bolt",
+     "acc": 71,
+     "dmg": 46,
+     "crit": 8,
+     "side": "front",
+     "valid": true
+    },
+    {
+     "att": "Rapha",
+     "def": "Wraith II",
+     "ability": "frost",
+     "acc": 71,
+     "dmg": 20,
+     "crit": 8,
+     "side": "front",
+     "valid": true
+    },
+    {
+     "att": "Alma",
+     "def": "Warlord",
+     "ability": "attack",
+     "acc": 90,
+     "dmg": 5,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Warlord",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 11,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Warlord",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 5,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Warlord",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 5,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Warlord",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Warlord II",
+     "ability": "attack",
+     "acc": 80,
+     "dmg": 4,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Warlord II",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 9,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Warlord II",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 4,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Warlord II",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 4,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Warlord II",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Sniper",
+     "ability": "attack",
+     "acc": 80,
+     "dmg": 10,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Sniper",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 19,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Sniper",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 10,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Sniper",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 10,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Sniper",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Sniper II",
+     "ability": "attack",
+     "acc": 70,
+     "dmg": 8,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Sniper II",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 16,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Sniper II",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 8,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Sniper II",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 8,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Sniper II",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Wraith",
+     "ability": "attack",
+     "acc": 76,
+     "dmg": 12,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Wraith",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 19,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Wraith",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 12,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Wraith",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 12,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Wraith",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 2,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Wraith II",
+     "ability": "attack",
+     "acc": 66,
+     "dmg": 9,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Wraith II",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 15,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Wraith II",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 9,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Wraith II",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 9,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Wraith II",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Warlord",
+     "def": "Ramza",
+     "ability": "attack",
+     "acc": 95,
+     "dmg": 23,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Warlord",
+     "def": "Ramza",
+     "ability": "cleave",
+     "acc": 95,
+     "dmg": 19,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Warlord",
+     "def": "Agrias",
+     "ability": "attack",
+     "acc": 94,
+     "dmg": 24,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Warlord",
+     "def": "Agrias",
+     "ability": "cleave",
+     "acc": 94,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Warlord",
+     "def": "Mustadio",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 35,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Warlord",
+     "def": "Mustadio",
+     "ability": "cleave",
+     "acc": 99,
+     "dmg": 31,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Warlord",
+     "def": "Rapha",
+     "ability": "attack",
+     "acc": 86,
+     "dmg": 25,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Warlord",
+     "def": "Rapha",
+     "ability": "cleave",
+     "acc": 86,
+     "dmg": 22,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Warlord",
+     "def": "Alma",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 32,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Warlord",
+     "def": "Alma",
+     "ability": "cleave",
+     "acc": 99,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Warlord II",
+     "def": "Ramza",
+     "ability": "attack",
+     "acc": 95,
+     "dmg": 23,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Warlord II",
+     "def": "Ramza",
+     "ability": "cleave",
+     "acc": 95,
+     "dmg": 19,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Warlord II",
+     "def": "Agrias",
+     "ability": "attack",
+     "acc": 94,
+     "dmg": 24,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Warlord II",
+     "def": "Agrias",
+     "ability": "cleave",
+     "acc": 94,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Warlord II",
+     "def": "Mustadio",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 35,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Warlord II",
+     "def": "Mustadio",
+     "ability": "cleave",
+     "acc": 99,
+     "dmg": 31,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Warlord II",
+     "def": "Rapha",
+     "ability": "attack",
+     "acc": 86,
+     "dmg": 25,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Warlord II",
+     "def": "Rapha",
+     "ability": "cleave",
+     "acc": 86,
+     "dmg": 22,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Warlord II",
+     "def": "Alma",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 32,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Warlord II",
+     "def": "Alma",
+     "ability": "cleave",
+     "acc": 99,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper",
+     "def": "Ramza",
+     "ability": "shoot",
+     "acc": 99,
+     "dmg": 23,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper",
+     "def": "Ramza",
+     "ability": "powerShot",
+     "acc": 99,
+     "dmg": 45,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper",
+     "def": "Agrias",
+     "ability": "shoot",
+     "acc": 99,
+     "dmg": 24,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper",
+     "def": "Agrias",
+     "ability": "powerShot",
+     "acc": 99,
+     "dmg": 47,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper",
+     "def": "Mustadio",
+     "ability": "shoot",
+     "acc": 99,
+     "dmg": 38,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Sniper",
+     "def": "Mustadio",
+     "ability": "powerShot",
+     "acc": 99,
+     "dmg": 66,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Sniper",
+     "def": "Rapha",
+     "ability": "shoot",
+     "acc": 99,
+     "dmg": 33,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper",
+     "def": "Rapha",
+     "ability": "powerShot",
+     "acc": 99,
+     "dmg": 56,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper",
+     "def": "Alma",
+     "ability": "shoot",
+     "acc": 99,
+     "dmg": 35,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper",
+     "def": "Alma",
+     "ability": "powerShot",
+     "acc": 99,
+     "dmg": 60,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper II",
+     "def": "Ramza",
+     "ability": "shoot",
+     "acc": 93,
+     "dmg": 18,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Sniper II",
+     "def": "Ramza",
+     "ability": "powerShot",
+     "acc": 93,
+     "dmg": 36,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Sniper II",
+     "def": "Agrias",
+     "ability": "shoot",
+     "acc": 99,
+     "dmg": 24,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper II",
+     "def": "Agrias",
+     "ability": "powerShot",
+     "acc": 99,
+     "dmg": 47,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper II",
+     "def": "Mustadio",
+     "ability": "shoot",
+     "acc": 99,
+     "dmg": 38,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Sniper II",
+     "def": "Mustadio",
+     "ability": "powerShot",
+     "acc": 99,
+     "dmg": 66,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Sniper II",
+     "def": "Rapha",
+     "ability": "shoot",
+     "acc": 94,
+     "dmg": 27,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Sniper II",
+     "def": "Rapha",
+     "ability": "powerShot",
+     "acc": 94,
+     "dmg": 45,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Sniper II",
+     "def": "Alma",
+     "ability": "shoot",
+     "acc": 99,
+     "dmg": 35,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Sniper II",
+     "def": "Alma",
+     "ability": "powerShot",
+     "acc": 99,
+     "dmg": 60,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Ramza",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 24,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Ramza",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 32,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Ramza",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 10,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Agrias",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Agrias",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 29,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Agrias",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 7,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Mustadio",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 32,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Mustadio",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 41,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Mustadio",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 15,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Rapha",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Rapha",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 27,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Rapha",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 6,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Alma",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 16,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Alma",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 23,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith",
+     "def": "Alma",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 2,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Ramza",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 19,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Ramza",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 25,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Ramza",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 8,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Agrias",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 26,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Agrias",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 35,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Agrias",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 9,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Mustadio",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 32,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Mustadio",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 41,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Mustadio",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 15,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Rapha",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 16,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Rapha",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 22,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Rapha",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 5,
+     "crit": 8,
+     "side": "front",
+     "valid": true
+    },
+    {
+     "att": "Wraith II",
+     "def": "Alma",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 16,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Alma",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 23,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Wraith II",
+     "def": "Alma",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 2,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    }
+   ],
+   "reach": [
+    {
+     "name": "Ramza",
+     "tiles": 16,
+     "sum": 3773
+    },
+    {
+     "name": "Agrias",
+     "tiles": 16,
+     "sum": 4424
+    },
+    {
+     "name": "Mustadio",
+     "tiles": 27,
+     "sum": 8379
+    },
+    {
+     "name": "Rapha",
+     "tiles": 16,
+     "sum": 5726
+    },
+    {
+     "name": "Alma",
+     "tiles": 11,
+     "sum": 3156
+    },
+    {
+     "name": "Warlord",
+     "tiles": 19,
+     "sum": 3390
+    },
+    {
+     "name": "Warlord II",
+     "tiles": 19,
+     "sum": 4041
+    },
+    {
+     "name": "Sniper",
+     "tiles": 34,
+     "sum": 4265
+    },
+    {
+     "name": "Sniper II",
+     "tiles": 34,
+     "sum": 10882
+    },
+    {
+     "name": "Wraith",
+     "tiles": 38,
+     "sum": 6290
+    },
+    {
+     "name": "Wraith II",
+     "tiles": 37,
+     "sum": 12180
+    }
+   ],
+   "field": [
+    {
+     "name": "Ramza",
+     "reachable": 120,
+     "sum": 404
+    },
+    {
+     "name": "Agrias",
+     "reachable": 120,
+     "sum": 404
+    },
+    {
+     "name": "Mustadio",
+     "reachable": 120,
+     "sum": 404
+    },
+    {
+     "name": "Rapha",
+     "reachable": 120,
+     "sum": 404
+    },
+    {
+     "name": "Alma",
+     "reachable": 120,
+     "sum": 404
+    },
+    {
+     "name": "Warlord",
+     "reachable": 120,
+     "sum": 737
+    },
+    {
+     "name": "Warlord II",
+     "reachable": 120,
+     "sum": 737
+    },
+    {
+     "name": "Sniper",
+     "reachable": 120,
+     "sum": 737
+    },
+    {
+     "name": "Sniper II",
+     "reachable": 120,
+     "sum": 737
+    },
+    {
+     "name": "Wraith",
+     "reachable": 120,
+     "sum": 737
+    },
+    {
+     "name": "Wraith II",
+     "reachable": 120,
+     "sum": 737
+    }
+   ],
+   "plans": [
+    {
+     "name": "Ramza",
+     "move": "6,9",
+     "ability": "rally",
+     "target": "6,9",
+     "score": 65.4
+    },
+    {
+     "name": "Agrias",
+     "move": "3,7",
+     "ability": "stasisSword",
+     "target": "3,4",
+     "score": 60.69
+    },
+    {
+     "name": "Mustadio",
+     "move": "5,6",
+     "ability": "arrowRain",
+     "target": "3,3",
+     "score": 93.39
+    },
+    {
+     "name": "Rapha",
+     "move": "6,6",
+     "ability": "bolt",
+     "target": "6,1",
+     "score": 87.31
+    },
+    {
+     "name": "Alma",
+     "move": "5,7",
+     "ability": "cureAll",
+     "target": "5,8",
+     "score": 52.25
+    },
+    {
+     "name": "Warlord",
+     "move": "3,2",
+     "ability": null,
+     "target": null,
+     "score": -1.65
+    },
+    {
+     "name": "Warlord II",
+     "move": "8,2",
+     "ability": null,
+     "target": null,
+     "score": -3.15
+    },
+    {
+     "name": "Sniper",
+     "move": "3,5",
+     "ability": "powerShot",
+     "target": "5,8",
+     "score": 78.98
+    },
+    {
+     "name": "Sniper II",
+     "move": "9,6",
+     "ability": "powerShot",
+     "target": "5,8",
+     "score": 87.28
+    },
+    {
+     "name": "Wraith",
+     "move": "5,6",
+     "ability": "drain",
+     "target": "6,8",
+     "score": 85.8
+    },
+    {
+     "name": "Wraith II",
+     "move": "7,6",
+     "ability": "drain",
+     "target": "6,8",
+     "score": 88.8
+    }
+   ],
+   "forecast": [
+    "Sniper",
+    "Warlord II",
+    "Alma",
+    "Mustadio",
+    "Warlord",
+    "Wraith II",
+    "Rapha",
+    "Wraith"
+   ]
+  },
+  "ch4": {
+   "units": [
+    {
+     "name": "Ramza",
+     "job": "Knight",
+     "team": "P",
+     "x": 5,
+     "y": 9,
+     "facing": 0,
+     "level": 5,
+     "hp": 33,
+     "maxHp": 66,
+     "mp": 18,
+     "maxMp": 18,
+     "atk": 15,
+     "def": 10,
+     "mag": 5,
+     "res": 6,
+     "spd": 8,
+     "move": 3,
+     "jump": 2,
+     "ct": 0
+    },
+    {
+     "name": "Agrias",
+     "job": "HolyKnight",
+     "team": "P",
+     "x": 6,
+     "y": 9,
+     "facing": 1,
+     "level": 5,
+     "hp": 42,
+     "maxHp": 60,
+     "mp": 28,
+     "maxMp": 28,
+     "atk": 15,
+     "def": 9,
+     "mag": 10,
+     "res": 8,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 13
+    },
+    {
+     "name": "Mustadio",
+     "job": "Archer",
+     "team": "P",
+     "x": 4,
+     "y": 9,
+     "facing": 2,
+     "level": 5,
+     "hp": 40,
+     "maxHp": 44,
+     "mp": 21,
+     "maxMp": 21,
+     "atk": 14,
+     "def": 4,
+     "mag": 5,
+     "res": 4,
+     "spd": 13,
+     "move": 4,
+     "jump": 3,
+     "ct": 26
+    },
+    {
+     "name": "Rapha",
+     "job": "Mage",
+     "team": "P",
+     "x": 7,
+     "y": 9,
+     "facing": 3,
+     "level": 5,
+     "hp": 22,
+     "maxHp": 36,
+     "mp": 44,
+     "maxMp": 44,
+     "atk": 6,
+     "def": 3,
+     "mag": 19,
+     "res": 9,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 39
+    },
+    {
+     "name": "Alma",
+     "job": "Priest",
+     "team": "P",
+     "x": 5,
+     "y": 8,
+     "facing": 0,
+     "level": 5,
+     "hp": 34,
+     "maxHp": 42,
+     "mp": 40,
+     "maxMp": 40,
+     "atk": 7,
+     "def": 4,
+     "mag": 16,
+     "res": 12,
+     "spd": 10,
+     "move": 3,
+     "jump": 2,
+     "ct": 52
+    },
+    {
+     "name": "Vetrix",
+     "job": "Necromancer",
+     "team": "E",
+     "x": 5,
+     "y": 1,
+     "facing": 1,
+     "level": 8,
+     "hp": 67,
+     "maxHp": 134,
+     "mp": 88,
+     "maxMp": 88,
+     "atk": 12,
+     "def": 10,
+     "mag": 29,
+     "res": 20,
+     "spd": 11,
+     "move": 3,
+     "jump": 2,
+     "ct": 65
+    },
+    {
+     "name": "Bone A",
+     "job": "Skeleton",
+     "team": "E",
+     "x": 4,
+     "y": 2,
+     "facing": 2,
+     "level": 8,
+     "hp": 25,
+     "maxHp": 36,
+     "mp": 0,
+     "maxMp": 0,
+     "atk": 13,
+     "def": 6,
+     "mag": 2,
+     "res": 2,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 78
+    },
+    {
+     "name": "Bone B",
+     "job": "Skeleton",
+     "team": "E",
+     "x": 7,
+     "y": 2,
+     "facing": 3,
+     "level": 8,
+     "hp": 32,
+     "maxHp": 36,
+     "mp": 0,
+     "maxMp": 0,
+     "atk": 13,
+     "def": 6,
+     "mag": 2,
+     "res": 2,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 91
+    },
+    {
+     "name": "Shade Lord",
+     "job": "Shade",
+     "team": "E",
+     "x": 6,
+     "y": 1,
+     "facing": 0,
+     "level": 8,
+     "hp": 26,
+     "maxHp": 43,
+     "mp": 40,
+     "maxMp": 40,
+     "atk": 7,
+     "def": 3,
+     "mag": 20,
+     "res": 12,
+     "spd": 13,
+     "move": 4,
+     "jump": 9,
+     "ct": 4
+    },
+    {
+     "name": "Bone C",
+     "job": "Skeleton",
+     "team": "E",
+     "x": 3,
+     "y": 2,
+     "facing": 1,
+     "level": 8,
+     "hp": 29,
+     "maxHp": 36,
+     "mp": 0,
+     "maxMp": 0,
+     "atk": 13,
+     "def": 6,
+     "mag": 2,
+     "res": 2,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 17
+    },
+    {
+     "name": "Bone D",
+     "job": "Skeleton",
+     "team": "E",
+     "x": 8,
+     "y": 2,
+     "facing": 2,
+     "level": 8,
+     "hp": 18,
+     "maxHp": 36,
+     "mp": 0,
+     "maxMp": 0,
+     "atk": 13,
+     "def": 6,
+     "mag": 2,
+     "res": 2,
+     "spd": 9,
+     "move": 3,
+     "jump": 2,
+     "ct": 30
+    }
+   ],
+   "combat": [
+    {
+     "att": "Ramza",
+     "def": "Vetrix",
+     "ability": "attack",
+     "acc": 88,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Vetrix",
+     "ability": "shieldBash",
+     "acc": 88,
+     "dmg": 13,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Vetrix",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone A",
+     "ability": "attack",
+     "acc": 88,
+     "dmg": 21,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone A",
+     "ability": "shieldBash",
+     "acc": 88,
+     "dmg": 16,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone A",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 21,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone B",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 32,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone B",
+     "ability": "shieldBash",
+     "acc": 99,
+     "dmg": 23,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone B",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 32,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Shade Lord",
+     "ability": "attack",
+     "acc": 86,
+     "dmg": 27,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Shade Lord",
+     "ability": "shieldBash",
+     "acc": 86,
+     "dmg": 21,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Shade Lord",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 27,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone C",
+     "ability": "attack",
+     "acc": 74,
+     "dmg": 24,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone C",
+     "ability": "shieldBash",
+     "acc": 74,
+     "dmg": 18,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone C",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 24,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone D",
+     "ability": "attack",
+     "acc": 64,
+     "dmg": 19,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone D",
+     "ability": "shieldBash",
+     "acc": 64,
+     "dmg": 14,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Ramza",
+     "def": "Bone D",
+     "ability": "rally",
+     "acc": 100,
+     "dmg": 19,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Vetrix",
+     "ability": "attack",
+     "acc": 88,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Vetrix",
+     "ability": "stasisSword",
+     "acc": 88,
+     "dmg": 31,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Vetrix",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone A",
+     "ability": "attack",
+     "acc": 88,
+     "dmg": 21,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone A",
+     "ability": "stasisSword",
+     "acc": 88,
+     "dmg": 31,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone A",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 21,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone B",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 32,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone B",
+     "ability": "stasisSword",
+     "acc": 99,
+     "dmg": 46,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone B",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 32,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Shade Lord",
+     "ability": "attack",
+     "acc": 86,
+     "dmg": 27,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Shade Lord",
+     "ability": "stasisSword",
+     "acc": 86,
+     "dmg": 39,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Shade Lord",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 27,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone C",
+     "ability": "attack",
+     "acc": 74,
+     "dmg": 24,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone C",
+     "ability": "stasisSword",
+     "acc": 74,
+     "dmg": 35,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone C",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 24,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone D",
+     "ability": "attack",
+     "acc": 64,
+     "dmg": 19,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone D",
+     "ability": "stasisSword",
+     "acc": 64,
+     "dmg": 28,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Agrias",
+     "def": "Bone D",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 19,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Vetrix",
+     "ability": "shoot",
+     "acc": 88,
+     "dmg": 17,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Vetrix",
+     "ability": "powerShot",
+     "acc": 88,
+     "dmg": 35,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Vetrix",
+     "ability": "arrowRain",
+     "acc": 88,
+     "dmg": 13,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone A",
+     "ability": "shoot",
+     "acc": 88,
+     "dmg": 24,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone A",
+     "ability": "powerShot",
+     "acc": 88,
+     "dmg": 44,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone A",
+     "ability": "arrowRain",
+     "acc": 88,
+     "dmg": 19,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone B",
+     "ability": "shoot",
+     "acc": 99,
+     "dmg": 36,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone B",
+     "ability": "powerShot",
+     "acc": 99,
+     "dmg": 66,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone B",
+     "ability": "arrowRain",
+     "acc": 99,
+     "dmg": 29,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Shade Lord",
+     "ability": "shoot",
+     "acc": 86,
+     "dmg": 25,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Shade Lord",
+     "ability": "powerShot",
+     "acc": 86,
+     "dmg": 43,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Shade Lord",
+     "ability": "arrowRain",
+     "acc": 86,
+     "dmg": 21,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone C",
+     "ability": "shoot",
+     "acc": 74,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone C",
+     "ability": "powerShot",
+     "acc": 74,
+     "dmg": 40,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone C",
+     "ability": "arrowRain",
+     "acc": 74,
+     "dmg": 17,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone D",
+     "ability": "shoot",
+     "acc": 64,
+     "dmg": 18,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone D",
+     "ability": "powerShot",
+     "acc": 64,
+     "dmg": 32,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Mustadio",
+     "def": "Bone D",
+     "ability": "arrowRain",
+     "acc": 64,
+     "dmg": 14,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Vetrix",
+     "ability": "zap",
+     "acc": 93,
+     "dmg": 10,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Vetrix",
+     "ability": "fire",
+     "acc": 93,
+     "dmg": 26,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Vetrix",
+     "ability": "bolt",
+     "acc": 93,
+     "dmg": 51,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Vetrix",
+     "ability": "frost",
+     "acc": 93,
+     "dmg": 13,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone A",
+     "ability": "zap",
+     "acc": 93,
+     "dmg": 26,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone A",
+     "ability": "fire",
+     "acc": 93,
+     "dmg": 40,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone A",
+     "ability": "bolt",
+     "acc": 93,
+     "dmg": 54,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone A",
+     "ability": "frost",
+     "acc": 93,
+     "dmg": 29,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone B",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 39,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone B",
+     "ability": "fire",
+     "acc": 99,
+     "dmg": 61,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone B",
+     "ability": "bolt",
+     "acc": 99,
+     "dmg": 81,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone B",
+     "ability": "frost",
+     "acc": 99,
+     "dmg": 44,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Shade Lord",
+     "ability": "zap",
+     "acc": 91,
+     "dmg": 19,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Shade Lord",
+     "ability": "fire",
+     "acc": 91,
+     "dmg": 35,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Shade Lord",
+     "ability": "bolt",
+     "acc": 91,
+     "dmg": 56,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Shade Lord",
+     "ability": "frost",
+     "acc": 91,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone C",
+     "ability": "zap",
+     "acc": 79,
+     "dmg": 30,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone C",
+     "ability": "fire",
+     "acc": 79,
+     "dmg": 46,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone C",
+     "ability": "bolt",
+     "acc": 79,
+     "dmg": 61,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone C",
+     "ability": "frost",
+     "acc": 79,
+     "dmg": 33,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone D",
+     "ability": "zap",
+     "acc": 69,
+     "dmg": 24,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone D",
+     "ability": "fire",
+     "acc": 69,
+     "dmg": 37,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone D",
+     "ability": "bolt",
+     "acc": 69,
+     "dmg": 49,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Rapha",
+     "def": "Bone D",
+     "ability": "frost",
+     "acc": 69,
+     "dmg": 27,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Vetrix",
+     "ability": "attack",
+     "acc": 88,
+     "dmg": 3,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Vetrix",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 10,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Vetrix",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 3,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Vetrix",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 3,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Vetrix",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone A",
+     "ability": "attack",
+     "acc": 88,
+     "dmg": 6,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone A",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 13,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone A",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 6,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone A",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 6,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone A",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone B",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 9,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone B",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 19,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone B",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 9,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone B",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 9,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone B",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Shade Lord",
+     "ability": "attack",
+     "acc": 86,
+     "dmg": 10,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Shade Lord",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 18,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Shade Lord",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 10,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Shade Lord",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 10,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Shade Lord",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone C",
+     "ability": "attack",
+     "acc": 74,
+     "dmg": 7,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone C",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 14,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone C",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 7,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone C",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 7,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone C",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone D",
+     "ability": "attack",
+     "acc": 64,
+     "dmg": 6,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone D",
+     "ability": "cure",
+     "acc": 100,
+     "dmg": 12,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone D",
+     "ability": "cureAll",
+     "acc": 100,
+     "dmg": 6,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone D",
+     "ability": "protect",
+     "acc": 100,
+     "dmg": 6,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Alma",
+     "def": "Bone D",
+     "ability": "raise",
+     "acc": 100,
+     "dmg": 1,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Ramza",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 42,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Ramza",
+     "ability": "darkPulse",
+     "acc": 99,
+     "dmg": 64,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Ramza",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Agrias",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 40,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Agrias",
+     "ability": "darkPulse",
+     "acc": 99,
+     "dmg": 62,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Agrias",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 18,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Mustadio",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 53,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Mustadio",
+     "ability": "darkPulse",
+     "acc": 99,
+     "dmg": 79,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Mustadio",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 27,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Rapha",
+     "ability": "zap",
+     "acc": 91,
+     "dmg": 31,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Rapha",
+     "ability": "darkPulse",
+     "acc": 91,
+     "dmg": 48,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Rapha",
+     "ability": "curseSlow",
+     "acc": 91,
+     "dmg": 14,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Alma",
+     "ability": "zap",
+     "acc": 94,
+     "dmg": 35,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Alma",
+     "ability": "darkPulse",
+     "acc": 94,
+     "dmg": 57,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Vetrix",
+     "def": "Alma",
+     "ability": "curseSlow",
+     "acc": 94,
+     "dmg": 14,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone A",
+     "def": "Ramza",
+     "ability": "attack",
+     "acc": 87,
+     "dmg": 16,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone A",
+     "def": "Agrias",
+     "ability": "attack",
+     "acc": 86,
+     "dmg": 17,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone A",
+     "def": "Mustadio",
+     "ability": "attack",
+     "acc": 92,
+     "dmg": 28,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Bone A",
+     "def": "Rapha",
+     "ability": "attack",
+     "acc": 78,
+     "dmg": 19,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Bone A",
+     "def": "Alma",
+     "ability": "attack",
+     "acc": 81,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone B",
+     "def": "Ramza",
+     "ability": "attack",
+     "acc": 87,
+     "dmg": 16,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone B",
+     "def": "Agrias",
+     "ability": "attack",
+     "acc": 86,
+     "dmg": 17,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone B",
+     "def": "Mustadio",
+     "ability": "attack",
+     "acc": 92,
+     "dmg": 28,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Bone B",
+     "def": "Rapha",
+     "ability": "attack",
+     "acc": 78,
+     "dmg": 19,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Bone B",
+     "def": "Alma",
+     "ability": "attack",
+     "acc": 81,
+     "dmg": 22,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Ramza",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 27,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Ramza",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 35,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Ramza",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 12,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Agrias",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 25,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Agrias",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 32,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Agrias",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 10,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Mustadio",
+     "ability": "zap",
+     "acc": 99,
+     "dmg": 35,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Mustadio",
+     "ability": "drain",
+     "acc": 99,
+     "dmg": 44,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Mustadio",
+     "ability": "curseSlow",
+     "acc": 99,
+     "dmg": 17,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Rapha",
+     "ability": "zap",
+     "acc": 91,
+     "dmg": 19,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Rapha",
+     "ability": "drain",
+     "acc": 91,
+     "dmg": 25,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Rapha",
+     "ability": "curseSlow",
+     "acc": 91,
+     "dmg": 7,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Alma",
+     "ability": "zap",
+     "acc": 94,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Alma",
+     "ability": "drain",
+     "acc": 94,
+     "dmg": 28,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Shade Lord",
+     "def": "Alma",
+     "ability": "curseSlow",
+     "acc": 94,
+     "dmg": 5,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone C",
+     "def": "Ramza",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone C",
+     "def": "Agrias",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 21,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone C",
+     "def": "Mustadio",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 33,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Bone C",
+     "def": "Rapha",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 23,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Bone C",
+     "def": "Alma",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 26,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone D",
+     "def": "Ramza",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 20,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone D",
+     "def": "Agrias",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 21,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    },
+    {
+     "att": "Bone D",
+     "def": "Mustadio",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 33,
+     "crit": 16,
+     "side": "back",
+     "valid": false
+    },
+    {
+     "att": "Bone D",
+     "def": "Rapha",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 23,
+     "crit": 8,
+     "side": "front",
+     "valid": false
+    },
+    {
+     "att": "Bone D",
+     "def": "Alma",
+     "ability": "attack",
+     "acc": 99,
+     "dmg": 26,
+     "crit": 8,
+     "side": "side",
+     "valid": false
+    }
+   ],
+   "reach": [
+    {
+     "name": "Ramza",
+     "tiles": 11,
+     "sum": 3105
+    },
+    {
+     "name": "Agrias",
+     "tiles": 11,
+     "sum": 3601
+    },
+    {
+     "name": "Mustadio",
+     "tiles": 20,
+     "sum": 4830
+    },
+    {
+     "name": "Rapha",
+     "tiles": 11,
+     "sum": 4097
+    },
+    {
+     "name": "Alma",
+     "tiles": 16,
+     "sum": 4373
+    },
+    {
+     "name": "Vetrix",
+     "tiles": 16,
+     "sum": 2854
+    },
+    {
+     "name": "Bone A",
+     "tiles": 14,
+     "sum": 2353
+    },
+    {
+     "name": "Bone B",
+     "tiles": 14,
+     "sum": 3407
+    },
+    {
+     "name": "Shade Lord",
+     "tiles": 26,
+     "sum": 5694
+    },
+    {
+     "name": "Bone C",
+     "tiles": 16,
+     "sum": 1660
+    },
+    {
+     "name": "Bone D",
+     "tiles": 16,
+     "sum": 4884
+    }
+   ],
+   "field": [
+    {
+     "name": "Ramza",
+     "reachable": 120,
+     "sum": 782
+    },
+    {
+     "name": "Agrias",
+     "reachable": 120,
+     "sum": 782
+    },
+    {
+     "name": "Mustadio",
+     "reachable": 120,
+     "sum": 758
+    },
+    {
+     "name": "Rapha",
+     "reachable": 120,
+     "sum": 782
+    },
+    {
+     "name": "Alma",
+     "reachable": 120,
+     "sum": 782
+    },
+    {
+     "name": "Vetrix",
+     "reachable": 120,
+     "sum": 1032
+    },
+    {
+     "name": "Bone A",
+     "reachable": 120,
+     "sum": 1032
+    },
+    {
+     "name": "Bone B",
+     "reachable": 120,
+     "sum": 1032
+    },
+    {
+     "name": "Shade Lord",
+     "reachable": 120,
+     "sum": 1014
+    },
+    {
+     "name": "Bone C",
+     "reachable": 120,
+     "sum": 1032
+    },
+    {
+     "name": "Bone D",
+     "reachable": 120,
+     "sum": 1032
+    }
+   ],
+   "plans": [
+    {
+     "name": "Ramza",
+     "move": null,
+     "ability": "rally",
+     "target": "5,9",
+     "score": 61.4
+    },
+    {
+     "name": "Agrias",
+     "move": "7,8",
+     "ability": "protect",
+     "target": "5,8",
+     "score": 6.2
+    },
+    {
+     "name": "Mustadio",
+     "move": "7,8",
+     "ability": "powerShot",
+     "target": "7,2",
+     "score": 63.23
+    },
+    {
+     "name": "Rapha",
+     "move": "7,7",
+     "ability": "frost",
+     "target": "7,3",
+     "score": 77.68
+    },
+    {
+     "name": "Alma",
+     "move": "6,8",
+     "ability": "cureAll",
+     "target": "6,9",
+     "score": 59.1
+    },
+    {
+     "name": "Vetrix",
+     "move": "5,4",
+     "ability": "darkPulse",
+     "target": "5,8",
+     "score": 104.5
+    },
+    {
+     "name": "Bone A",
+     "move": "2,1",
+     "ability": null,
+     "target": null,
+     "score": -11
+    },
+    {
+     "name": "Bone B",
+     "move": "9,1",
+     "ability": null,
+     "target": null,
+     "score": -11
+    },
+    {
+     "name": "Shade Lord",
+     "move": "8,3",
+     "ability": null,
+     "target": null,
+     "score": -2
+    },
+    {
+     "name": "Bone C",
+     "move": "2,4",
+     "ability": null,
+     "target": null,
+     "score": -0.3
+    },
+    {
+     "name": "Bone D",
+     "move": "9,4",
+     "ability": null,
+     "target": null,
+     "score": 1.2
+    }
+   ],
+   "forecast": [
+    "Bone B",
+    "Bone A",
+    "Vetrix",
+    "Alma",
+    "Mustadio",
+    "Rapha",
+    "Shade Lord",
+    "Bone D"
+   ]
+  }
+ }
+}
